@@ -76,6 +76,7 @@ export async function getTutorDashboardStats() {
 }
 
 // 2. GET ALL TUITIONS CREATED BY THE LOGGED-IN TUTOR
+
 export async function getMyTuitions() {
   try {
     const session = await getTutorSession();
@@ -90,18 +91,38 @@ export async function getMyTuitions() {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return tuitions.map((tuition) => ({
-      ...tuition,
-      _id: tuition._id.toString(),
-      createdAt: tuition.createdAt
+    return tuitions.map((tuition) => {
+      const createdAt = tuition.createdAt
         ? new Date(tuition.createdAt).toISOString()
-        : null,
-    }));
+        : null;
+
+      return {
+        _id: tuition._id.toString(),
+        title: String(tuition.title ?? ""),
+        subject: String(tuition.subject ?? ""),
+        classLevel: String(tuition.classLevel ?? ""),
+        mode: tuition.mode === "Online" ? "Online" as const : "Offline" as const,
+        location: String(tuition.location ?? ""),
+        monthlyFee: Number(tuition.monthlyFee) || 0,
+        daysPerWeek: Number(tuition.daysPerWeek) || 0,
+        bannerImage: String(tuition.bannerImage ?? ""),
+        description: String(tuition.description ?? ""),
+        approvalStatus:
+          tuition.approvalStatus === "approved"
+            ? "approved" as const
+            : tuition.approvalStatus === "rejected"
+              ? "rejected" as const
+              : "pending" as const,
+        isActive: Boolean(tuition.isActive),
+        createdAt,
+      };
+    });
   } catch (error) {
     console.error("Get tutor tuitions error:", error);
     return [];
   }
 }
+
 
 // 3. GET APPLICATIONS FOR THE LOGGED-IN TUTOR
 export async function getTutorApplications() {
