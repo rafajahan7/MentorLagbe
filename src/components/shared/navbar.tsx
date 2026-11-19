@@ -3,27 +3,25 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  GraduationCap,
+  Menu,
+  X,
+  UserRound,
+  LayoutDashboard,
+  LogOut,
+} from "lucide-react";
+
+import { authClient } from "@/lib/auth-client";
 
 type UserRole = "student" | "tutor" | "admin";
 
-interface NavbarUser {
-  name: string;
-  email: string;
-  image?: string | null;
-  role: UserRole;
-}
-
-interface NavbarProps {
-  user?: NavbarUser | null;
-  onSignOut?: () => void;
-}
-
 const navLinks = [
-  { name: "Explore", href: "/tuitions" },
-  { name: "For Tutors", href: "/for-tutors" },
+  { name: "Home", href: "/" },
+  { name: "Browse Tuitions", href: "/tuitions" },
+  { name: "Pricing", href: "/pricing" },
   { name: "How It Works", href: "/how-it-works" },
-  { name: "Pro Plans", href: "/pricing" },
 ];
 
 const dashboardRoutes: Record<UserRole, string> = {
@@ -32,22 +30,61 @@ const dashboardRoutes: Record<UserRole, string> = {
   admin: "/dashboard/admin",
 };
 
-export default function Navbar({
-  user = null,
-  onSignOut,
-}: NavbarProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
+const roleStyles: Record<UserRole, string> = {
+  student: "bg-[#DCE9E2] text-[#183F38]",
+  tutor: "bg-[#F8EBCB] text-[#89651D]",
+  admin: "bg-[#F6DFD8] text-[#A34E37]",
+};
 
-  const dashboardLink = user
-    ? dashboardRoutes[user.role]
-    : "/";
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+export default function Navbar() {
+  const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  const { data: session, isPending } = authClient.useSession();
+
+  const user = session?.user;
+
+  const role = user?.role as UserRole | undefined;
+
+  const dashboardLink =
+    role && role in dashboardRoutes
+      ? dashboardRoutes[role]
+      : "/";
+
+  async function handleSignOut() {
+    setSigningOut(true);
+
+    try {
+      await authClient.signOut();
+      setMenuOpen(false);
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      setSigningOut(false);
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#183F38]/10 bg-[#F7F4EC]">
       <div className="mx-auto flex min-h-[82px] max-w-7xl items-center justify-between px-5 md:px-8">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-3"
+        >
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#183F38] text-[#F7F4EC]">
             <GraduationCap size={25} />
           </div>
@@ -77,37 +114,62 @@ export default function Navbar({
 
         {/* Desktop User Actions */}
         <div className="hidden items-center gap-4 lg:flex">
-          {user ? (
+          {isPending ? (
+            <div className="h-10 w-24 animate-pulse rounded-full bg-[#DCE9E2]" />
+          ) : user ? (
             <>
               <Link
                 href={dashboardLink}
-                className="text-sm font-semibold text-[#183F38] hover:text-[#B58A35]"
+                className="flex items-center gap-2 text-sm font-semibold text-[#183F38] transition hover:text-[#B58A35]"
               >
+                <LayoutDashboard size={17} />
                 Dashboard
               </Link>
 
               <Link
                 href="/profile"
-                className="text-sm font-semibold text-[#183F38] hover:text-[#B58A35]"
+                className="flex items-center gap-2.5 rounded-full border border-[#183F38]/10 px-3 py-2 transition hover:bg-[#DCE9E2]"
               >
-                {user.name}
-                <span className="ml-1 text-xs text-[#9A7B3F]">
-                  ({user.role})
-                </span>
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={`${user.name}'s profile`}
+                    className="h-9 w-9 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#183F38] text-xs font-bold text-white">
+                    {getInitials(user.name || "User")}
+                  </div>
+                )}
+
+                <div className="flex flex-col items-start">
+                  <span className="max-w-[110px] truncate text-sm font-bold text-[#183F38]">
+                    {user.name}
+                  </span>
+
+                  {role && roleStyles[role] && (
+                    <span
+                      className={`mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold capitalize ${roleStyles[role]}`}
+                    >
+                      {role}
+                    </span>
+                  )}
+                </div>
               </Link>
 
               <button
-                onClick={onSignOut}
-                className="rounded-full border border-[#183F38]/25 px-4 py-2 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2]"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                className="rounded-full border border-[#183F38]/25 px-4 py-2 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:opacity-50"
               >
-                Sign Out
+                {signingOut ? "Signing out..." : "Sign Out"}
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/sign-in"
-                className="text-sm font-semibold text-[#183F38] hover:text-[#B58A35]"
+                className="text-sm font-semibold text-[#183F38] transition hover:text-[#B58A35]"
               >
                 Sign In
               </Link>
@@ -116,7 +178,7 @@ export default function Navbar({
                 href="/sign-up"
                 className="rounded-full bg-[#183F38] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#28584E]"
               >
-                Find a Tutor <span className="ml-1">↗</span>
+                Sign Up <span className="ml-1">↗</span>
               </Link>
             </>
           )}
@@ -125,8 +187,9 @@ export default function Navbar({
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="rounded-lg p-2 text-[#183F38] hover:bg-[#DCE9E2] lg:hidden"
+          className="rounded-lg p-2 text-[#183F38] transition hover:bg-[#DCE9E2] lg:hidden"
           aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
         >
           {menuOpen ? <X size={25} /> : <Menu size={25} />}
         </button>
@@ -141,7 +204,7 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-[#354B42] hover:text-[#B58A35]"
+                className="text-sm font-semibold text-[#354B42] transition hover:text-[#B58A35]"
               >
                 {link.name}
               </Link>
@@ -150,41 +213,68 @@ export default function Navbar({
 
           <div className="my-5 border-t border-[#183F38]/10" />
 
-          {user ? (
+          {isPending ? (
+            <div className="h-10 animate-pulse rounded-lg bg-[#DCE9E2]" />
+          ) : user ? (
             <div className="flex flex-col gap-4">
-              <div>
-                <p className="font-semibold text-[#183F38]">
-                  {user.name}
-                </p>
-                <p className="text-xs capitalize text-[#9A7B3F]">
-                  {user.role}
-                </p>
-              </div>
+              {/* Mobile Profile */}
+              <Link
+                href="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3"
+              >
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={`${user.name}'s profile`}
+                    className="h-11 w-11 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#183F38] text-sm font-bold text-white">
+                    {getInitials(user.name || "User")}
+                  </div>
+                )}
+
+                <div>
+                  <p className="font-bold text-[#183F38]">
+                    {user.name}
+                  </p>
+
+                  {role && roleStyles[role] && (
+                    <span
+                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold capitalize ${roleStyles[role]}`}
+                    >
+                      {role}
+                    </span>
+                  )}
+                </div>
+              </Link>
 
               <Link
                 href={dashboardLink}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-[#183F38]"
+                className="flex items-center gap-2 text-sm font-semibold text-[#183F38]"
               >
+                <LayoutDashboard size={17} />
                 Dashboard
               </Link>
 
               <Link
                 href="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-[#183F38]"
+                className="flex items-center gap-2 text-sm font-semibold text-[#183F38]"
               >
+                <UserRound size={17} />
                 Update Profile
               </Link>
 
               <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  onSignOut?.();
-                }}
-                className="text-left text-sm font-semibold text-red-600"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                className="flex items-center gap-2 text-left text-sm font-semibold text-red-600 disabled:opacity-50"
               >
-                Sign Out
+                <LogOut size={17} />
+                {signingOut ? "Signing out..." : "Sign Out"}
               </button>
             </div>
           ) : (
@@ -202,7 +292,7 @@ export default function Navbar({
                 onClick={() => setMenuOpen(false)}
                 className="w-fit rounded-full bg-[#183F38] px-5 py-3 text-sm font-semibold text-white"
               >
-                Find a Tutor ↗
+                Sign Up ↗
               </Link>
             </div>
           )}
