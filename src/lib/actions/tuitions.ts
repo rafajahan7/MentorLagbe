@@ -180,3 +180,31 @@ export async function getPendingTuitions() {
   }
 }
 
+export async function getTuitionById(id: string): Promise<Tuition | null> {
+  try {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+
+    const tuition = await db
+      .collection<TuitionDocument>("tuitions")
+      .findOne({
+        _id: new ObjectId(id),
+        approvalStatus: "approved",
+        isActive: true,
+      });
+
+    if (!tuition) {
+      return null;
+    }
+
+    return {
+      ...tuition,
+      _id: tuition._id.toString(),
+    };
+  } catch (error) {
+    console.error("Failed to fetch tuition details:", error);
+    return null;
+  }
+}
+

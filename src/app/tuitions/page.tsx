@@ -1,4 +1,7 @@
 
+import { Suspense } from "react";
+import { connection } from "next/server";
+
 import { getApprovedTuitions } from "@/lib/actions/tuitions";
 import TuitionList from "@/components/tuitions/tuition-list";
 
@@ -8,9 +11,36 @@ export const metadata = {
     "Explore approved tuition opportunities and find the right learning match.",
 };
 
-export default async function TuitionsPage() {
+async function TuitionResults() {
+  // Wait until request time before accessing the database.
+  await connection();
+
   const tuitions = await getApprovedTuitions();
 
+  return <TuitionList tuitions={tuitions} />;
+}
+
+function TuitionLoading() {
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-12">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((item) => (
+          <div
+            key={item}
+            className="animate-pulse rounded-2xl border border-[#183F38]/10 bg-white p-6"
+          >
+            <div className="h-40 rounded-xl bg-[#DCE9E2]" />
+            <div className="mt-5 h-4 w-1/3 rounded bg-[#DCE9E2]" />
+            <div className="mt-3 h-6 w-3/4 rounded bg-[#DCE9E2]" />
+            <div className="mt-4 h-4 w-1/2 rounded bg-[#DCE9E2]" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function TuitionsPage() {
   return (
     <div className="min-h-screen bg-[#F7F4EC]">
       {/* Page Heading */}
@@ -33,7 +63,9 @@ export default async function TuitionsPage() {
       </section>
 
       {/* Search, Filters and Tuition Cards */}
-      <TuitionList tuitions={tuitions} />
+      <Suspense fallback={<TuitionLoading />}>
+        <TuitionResults />
+      </Suspense>
     </div>
   );
 }
