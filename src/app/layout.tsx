@@ -32,10 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#F7F4EC] antialiased`}
       >
         <Navbar />
-        <main>{children}</main>
+        <main className="min-h-[calc(100vh-82px)]">
+          {children}
+        </main>
       </body>
     </html>
   );
