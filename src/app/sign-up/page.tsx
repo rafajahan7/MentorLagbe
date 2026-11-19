@@ -33,14 +33,12 @@ export default function SignUpPage() {
 
     try {
       const result = await authClient.signUp.email({
-        name,
-        email,
-        password,
-        callbackURL: "/",
-        data: {
-          role,
-        },
-      });
+  name,
+  email,
+  password,
+  callbackURL: "/",
+  role,
+});
 
       if (result.error) {
         setError(result.error.message || "Registration failed.");
