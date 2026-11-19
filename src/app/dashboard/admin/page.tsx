@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   description: "Monitor MentorLagbe platform statistics.",
 };
 
+export const instant = false;
+
 const adminLinks = [
   {
     title: "User Management",

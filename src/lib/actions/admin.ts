@@ -201,3 +201,153 @@ export async function updateUserRole(
   }
 }
 
+export async function getAllAdminTuitions() {
+  try {
+    if (!(await isAdmin())) {
+      return {
+        success: false,
+        tuitions: [],
+      };
+    }
+
+    const tuitions = await db
+      .collection("tuitions")
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    const formattedTuitions = tuitions.map((tuition) => ({
+      _id: tuition._id.toString(),
+      title: tuition.title || "",
+      subject: tuition.subject || "",
+      classLevel: tuition.classLevel || "",
+      mode: tuition.mode || "Online",
+      location: tuition.location || "",
+      monthlyFee: Number(tuition.monthlyFee || 0),
+      tutorName: tuition.tutorName || "Unknown Tutor",
+      tutorEmail: tuition.tutorEmail || "",
+      approvalStatus: tuition.approvalStatus || "pending",
+      isActive: tuition.isActive ?? true,
+      createdAt: tuition.createdAt
+        ? new Date(tuition.createdAt).toISOString()
+        : "",
+    }));
+
+    return {
+      success: true,
+      tuitions: formattedTuitions,
+    };
+  } catch (error) {
+    console.error("Get all admin tuitions error:", error);
+
+    return {
+      success: false,
+      tuitions: [],
+    };
+  }
+}
+
+export async function updateTuitionApproval(
+  tuitionId: string,
+  status: "approved" | "rejected"
+) {
+  try {
+    if (!(await isAdmin())) {
+      return {
+        success: false,
+        message: "Unauthorized access.",
+      };
+    }
+
+    if (!ObjectId.isValid(tuitionId)) {
+      return {
+        success: false,
+        message: "Invalid tuition ID.",
+      };
+    }
+
+    if (status !== "approved" && status !== "rejected") {
+      return {
+        success: false,
+        message: "Invalid approval status.",
+      };
+    }
+
+    const result = await db.collection("tuitions").updateOne(
+      { _id: new ObjectId(tuitionId) },
+      {
+        $set: {
+          approvalStatus: status,
+          isActive: status === "approved",
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return {
+        success: false,
+        message: "Tuition post not found.",
+      };
+    }
+
+    return {
+      success: true,
+      message:
+        status === "approved"
+          ? "Tuition approved successfully."
+          : "Tuition rejected successfully.",
+    };
+  } catch (error) {
+    console.error("Update tuition approval error:", error);
+
+    return {
+      success: false,
+      message: "Could not update tuition approval.",
+    };
+  }
+}
+
+export async function getAllTransactions() {
+  try {
+    if (!(await isAdmin())) {
+      return {
+        success: false,
+        transactions: [],
+      };
+    }
+
+    const transactions = await db
+      .collection("payments")
+      .find({ paymentStatus: "paid" })
+      .sort({ paidAt: -1 })
+      .toArray();
+
+    const formattedTransactions = transactions.map((payment) => ({
+      _id: payment._id.toString(),
+      userName: payment.userName || "Unknown User",
+      userEmail: payment.userEmail || "",
+      userRole: payment.userRole || "",
+      planName: payment.planName || "Pro",
+      amount: Number(payment.amount || 0),
+      currency: payment.currency || "BDT",
+      transactionId: payment.transactionId || "",
+      paidAt: payment.paidAt
+        ? new Date(payment.paidAt).toISOString()
+        : "",
+    }));
+
+    return {
+      success: true,
+      transactions: formattedTransactions,
+    };
+  } catch (error) {
+    console.error("Get transactions error:", error);
+
+    return {
+      success: false,
+      transactions: [],
+    };
+  }
+}
+
+
