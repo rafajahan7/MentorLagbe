@@ -18,10 +18,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Only tutors and admins can upload tuition images
+    // All authenticated roles can upload images
     const role = session.user.role;
 
-    if (role !== "tutor" && role !== "admin") {
+    if (!["student", "tutor", "admin"].includes(role)) {
       return NextResponse.json(
         { success: false, message: "You are not allowed to upload images." },
         { status: 403 }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Read the uploaded image
+    // Read uploaded image
     const formData = await request.formData();
     const image = formData.get("image");
 
@@ -49,9 +49,16 @@ export async function POST(request: Request) {
     }
 
     // Validate image type
-    if (!image.type.startsWith("image/")) {
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+    ];
+
+    if (!allowedTypes.includes(image.type)) {
       return NextResponse.json(
-        { success: false, message: "Only image files are allowed." },
+        { success: false, message: "Only JPG, PNG, WEBP, and GIF images are allowed." },
         { status: 400 }
       );
     }
