@@ -44,9 +44,11 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white px-6 py-24 md:py-28">
+    <section
+      id="how-it-works"
+      className="scroll-mt-24 bg-white px-6 py-24 md:py-28"
+    >
       <div className="mx-auto max-w-7xl">
-
         {/* Heading */}
         <div className="max-w-2xl">
           <span className="text-xs font-bold tracking-[0.2em] text-[#B58A35]">

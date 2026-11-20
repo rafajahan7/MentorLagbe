@@ -21,7 +21,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Browse Tuitions", href: "/tuitions" },
   { name: "Pricing", href: "/pricing" },
-  { name: "How It Works", href: "/how-it-works" },
+  { name: "How It Works", href:"/#how-it-works" },
 ];
 
 const dashboardRoutes: Record<UserRole, string> = {
