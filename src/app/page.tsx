@@ -6,6 +6,7 @@ import HowItWorks from "@/components/home/how-it-works";
 import WhyMentorLagbe from "@/components/home/why-mentorlagbe";
 import PricingPreview from "@/components/home/pricing-review";
 import TopSubjects from "@/components/home/top-subjects";
+import HomeCTA from "@/components/home/home-cta";
 
 function FeaturedTuitionsFallback() {
   return (
@@ -39,6 +40,7 @@ export default function HomePage() {
       <HowItWorks />
       <WhyMentorLagbe />
       <PricingPreview />
+      <HomeCTA />
     </>
   );
 }
