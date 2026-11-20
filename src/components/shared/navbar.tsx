@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -21,7 +22,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Browse Tuitions", href: "/tuitions" },
   { name: "Pricing", href: "/pricing" },
-  { name: "How It Works", href:"/#how-it-works" },
+  { name: "How It Works", href: "/#how-it-works" },
 ];
 
 const dashboardRoutes: Record<UserRole, string> = {
@@ -48,13 +49,13 @@ function getInitials(name: string) {
 
 export default function Navbar() {
   const router = useRouter();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
-
   const role = user?.role as UserRole | undefined;
 
   const dashboardLink =
@@ -63,15 +64,38 @@ export default function Navbar() {
       : "/";
 
   async function handleSignOut() {
+    if (signingOut) return;
+
     setSigningOut(true);
 
     try {
-      await authClient.signOut();
+      const result = await authClient.signOut();
+
+      if (result.error) {
+        const message =
+          result.error.message || "Could not sign out. Please try again.";
+
+        toast.error(message);
+        setSigningOut(false);
+        return;
+      }
+
       setMenuOpen(false);
+
+      toast.success("Signed out successfully!", {
+        description: "See you again at MentorLagbe!",
+        duration: 3000,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       router.push("/");
       router.refresh();
     } catch (error) {
       console.error("Sign out failed:", error);
+
+      toast.error("Something went wrong while signing out.");
+
       setSigningOut(false);
     }
   }
@@ -217,6 +241,7 @@ export default function Navbar() {
             <div className="h-10 animate-pulse rounded-lg bg-[#DCE9E2]" />
           ) : user ? (
             <div className="flex flex-col gap-4">
+
               {/* Mobile Profile */}
               <Link
                 href="/profile"

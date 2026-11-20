@@ -3,6 +3,8 @@
 
 import { useMemo, useState } from "react";
 import { Search, Users, Loader2, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+
 import { updateUserRole } from "@/lib/actions/admin";
 
 type UserRole = "student" | "tutor" | "admin";
@@ -46,28 +48,38 @@ export default function UsersTable({
   async function handleRoleChange(userId: string, newRole: UserRole) {
     const previousUser = users.find((user) => user._id === userId);
 
-    if (!previousUser || previousUser.role === newRole) return;
+    if (!previousUser || previousUser.role === newRole || updatingId) return;
 
     setUpdatingId(userId);
     setMessage("");
     setError("");
 
-    const result = await updateUserRole(userId, newRole);
+    try {
+      const result = await updateUserRole(userId, newRole);
 
-    if (!result.success) {
-      setError(result.message);
+      if (!result.success) {
+        setError(result.message);
+        toast.error(result.message);
+        return;
+      }
+
+      setUsers((currentUsers) =>
+        currentUsers.map((user) =>
+          user._id === userId ? { ...user, role: newRole } : user
+        )
+      );
+
+      setMessage(result.message);
+      toast.success(result.message);
+    } catch (err) {
+      console.error("User role update failed:", err);
+
+      const errorMessage = "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
       setUpdatingId(null);
-      return;
     }
-
-    setUsers((currentUsers) =>
-      currentUsers.map((user) =>
-        user._id === userId ? { ...user, role: newRole } : user
-      )
-    );
-
-    setMessage(result.message);
-    setUpdatingId(null);
   }
 
   return (
@@ -133,7 +145,10 @@ export default function UsersTable({
 
             <tbody className="divide-y divide-[#183F38]/10">
               {filteredUsers.map((user) => (
-                <tr key={user._id} className="transition hover:bg-[#F7F4EC]/60">
+                <tr
+                  key={user._id}
+                  className="transition hover:bg-[#F7F4EC]/60"
+                >
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
                       {user.image ? (
@@ -166,11 +181,13 @@ export default function UsersTable({
                   </td>
 
                   <td className="px-6 py-5">
-                    <span className={`rounded-full px-3 py-1.5 text-xs font-bold capitalize ${
-                      user.plan === "pro"
-                        ? "bg-[#F8EBCB] text-[#89651D]"
-                        : "bg-gray-100 text-gray-600"
-                    }`}>
+                    <span
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold capitalize ${
+                        user.plan === "pro"
+                          ? "bg-[#F8EBCB] text-[#89651D]"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
                       {user.plan}
                     </span>
                   </td>
@@ -191,7 +208,7 @@ export default function UsersTable({
                       <div className="flex items-center gap-2">
                         <select
                           value={user.role}
-                          disabled={updatingId === user._id}
+                          disabled={updatingId !== null}
                           onChange={(event) =>
                             handleRoleChange(
                               user._id,

@@ -14,6 +14,7 @@ import {
   Mail,
   MessageSquare,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { updateTutorApplicationStatus } from "@/lib/actions/tutor";
 
@@ -63,26 +64,35 @@ export default function ApplicantsTable({
     setLoadingId(applicationId);
     setMessage("");
 
-    const result = await updateTutorApplicationStatus(
-      applicationId,
-      status
-    );
-
-    if (result.success) {
-      setApplications((previous) =>
-        previous.map((application) =>
-          application._id === applicationId
-            ? { ...application, status }
-            : application
-        )
+    try {
+      const result = await updateTutorApplicationStatus(
+        applicationId,
+        status
       );
 
-      setMessage(result.message);
-    } else {
-      setMessage(result.message);
-    }
+      if (result.success) {
+        setApplications((previous) =>
+          previous.map((application) =>
+            application._id === applicationId
+              ? { ...application, status }
+              : application
+          )
+        );
 
-    setLoadingId(null);
+        setMessage(result.message);
+        toast.success(result.message);
+      } else {
+        setMessage(result.message);
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error("Application status update failed:", error);
+
+      setMessage("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoadingId(null);
+    }
   }
 
   const pendingCount = applications.filter(

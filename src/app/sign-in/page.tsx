@@ -10,7 +10,7 @@ import {
   EyeOff,
   ArrowRight,
 } from "lucide-react";
-
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
@@ -34,28 +34,41 @@ export default function SignInPage() {
       });
 
       if (result.error) {
-        setError(
-          result.error.message || "Invalid email or password."
-        );
+        const message =
+          result.error.message || "Invalid email or password.";
+
+        setError(message);
+        toast.error(message);
         return;
       }
 
       const user = result.data?.user;
       const role = user?.role;
 
+      let dashboardPath = "/";
+
       if (role === "student") {
-        router.push("/dashboard/student");
+        dashboardPath = "/dashboard/student";
       } else if (role === "tutor") {
-        router.push("/dashboard/tutor");
+        dashboardPath = "/dashboard/tutor";
       } else if (role === "admin") {
-        router.push("/dashboard/admin");
-      } else {
-        router.push("/");
+        dashboardPath = "/dashboard/admin";
       }
 
+      toast.success("Signed in successfully!", {
+        description: "Welcome back to MentorLagbe!",
+        duration: 3000,
+      });
+
+      // Allow the notification to appear before navigation.
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      router.push(dashboardPath);
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      const message = "Something went wrong. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

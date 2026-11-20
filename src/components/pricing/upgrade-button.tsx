@@ -3,15 +3,22 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function UpgradeButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleUpgrade() {
+    if (loading) return;
+
     try {
       setLoading(true);
       setError("");
+
+      toast.loading("Preparing your Pro checkout...", {
+        id: "stripe-checkout",
+      });
 
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -20,6 +27,8 @@ export default function UpgradeButton() {
       const data = await response.json();
 
       if (response.status === 401) {
+        toast.dismiss("stripe-checkout");
+        toast.error("Please sign in before upgrading.");
         window.location.href = "/sign-in";
         return;
       }
@@ -28,13 +37,21 @@ export default function UpgradeButton() {
         throw new Error(data.message || "Could not start checkout.");
       }
 
+      toast.dismiss("stripe-checkout");
+      toast.success("Redirecting you to secure Stripe Checkout...");
+
       window.location.href = data.url;
     } catch (error) {
-      setError(
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : "Something went wrong. Please try again."
-      );
+          : "Something went wrong. Please try again.";
+
+      setError(errorMessage);
+
+      toast.dismiss("stripe-checkout");
+      toast.error(errorMessage);
+
       setLoading(false);
     }
   }

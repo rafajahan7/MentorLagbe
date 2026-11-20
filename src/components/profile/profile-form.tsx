@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { UserRound, Save, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { updateMyProfile } from "@/lib/actions/profile";
 import ImageUpload from "@/components/tuitions/image-upload";
@@ -35,19 +36,43 @@ export default function ProfileForm({
   ) {
     event.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
     setMessage("");
 
-    const result = await updateMyProfile({
-      name,
-      phone,
-      bio,
-      image,
-    });
+    try {
+      const result = await updateMyProfile({
+        name,
+        phone,
+        bio,
+        image,
+      });
 
-    setLoading(false);
-    setIsError(!result.success);
-    setMessage(result.message);
+      setIsError(!result.success);
+      setMessage(result.message);
+
+      if (result.success) {
+        toast.success("Profile updated successfully!", {
+          description: "Your profile changes have been saved.",
+        });
+      } else {
+        toast.error("Profile update failed", {
+          description: result.message,
+        });
+      }
+    } catch {
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setIsError(true);
+      setMessage(errorMessage);
+
+      toast.error("Unable to update profile", {
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -65,10 +90,7 @@ export default function ProfileForm({
         </p>
 
         <div className="max-w-sm">
-          <ImageUpload
-            value={image}
-            onChange={setImage}
-          />
+          <ImageUpload value={image} onChange={setImage} />
         </div>
       </div>
 

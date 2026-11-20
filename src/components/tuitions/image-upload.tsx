@@ -3,6 +3,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { ImagePlus, Upload, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   value: string;
@@ -44,12 +45,18 @@ export default function ImageUpload({
     if (!selectedFile) return;
 
     if (!selectedFile.type.startsWith("image/")) {
-      setError("Please select an image file.");
+      const message = "Please select an image file.";
+      setError(message);
+      toast.error(message);
+      event.target.value = "";
       return;
     }
 
     if (selectedFile.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5 MB.");
+      const message = "Image size must be less than 5 MB.";
+      setError(message);
+      toast.error(message);
+      event.target.value = "";
       return;
     }
 
@@ -57,14 +64,22 @@ export default function ImageUpload({
   }
 
   async function handleUpload() {
-    if (!file) {
-      setError("Please select an image first.");
+    if (!file || loading) {
+      if (!file) {
+        const message = "Please select an image first.";
+        setError(message);
+        toast.error(message);
+      }
       return;
     }
 
     setLoading(true);
     setError("");
     setSuccess("");
+
+    toast.loading("Uploading your image...", {
+      id: "image-upload",
+    });
 
     try {
       const formData = new FormData();
@@ -84,18 +99,28 @@ export default function ImageUpload({
       onChange(result.imageUrl);
       setFile(null);
       setSuccess("Image uploaded successfully!");
+
+      toast.success("Image uploaded successfully!", {
+        id: "image-upload",
+      });
     } catch (err) {
-      setError(
+      const errorMessage =
         err instanceof Error
           ? err.message
-          : "Something went wrong. Please try again."
-      );
+          : "Something went wrong. Please try again.";
+
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        id: "image-upload",
+      });
     } finally {
       setLoading(false);
     }
   }
 
   function handleRemove() {
+    if (loading) return;
+
     setFile(null);
     setPreview("");
     setError("");

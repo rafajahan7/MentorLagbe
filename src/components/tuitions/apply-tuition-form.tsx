@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Send, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { applyForTuition } from "@/lib/actions/student";
 
@@ -32,6 +33,8 @@ export default function ApplyTuitionForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (loading) return;
+
     setMessage("");
     setSuccess(false);
     setLoading(true);
@@ -48,13 +51,29 @@ export default function ApplyTuitionForm({
       setSuccess(result.success);
 
       if (result.success) {
+        toast.success("Application submitted successfully!", {
+          description: "The tutor will review your application.",
+        });
+
         setStudentPhone("");
         setPreferredSchedule("");
         setStudentNote("");
+
         router.refresh();
+      } else {
+        toast.error("Application could not be submitted", {
+          description: result.message,
+        });
       }
     } catch {
-      setMessage("Something went wrong. Please try again.");
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setMessage(errorMessage);
+      setSuccess(false);
+
+      toast.error("Something went wrong", {
+        description: errorMessage,
+      });
     } finally {
       setLoading(false);
     }

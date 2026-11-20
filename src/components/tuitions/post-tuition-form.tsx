@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { createTuition } from "@/lib/actions/tuitions";
 import ImageUpload from "@/components/tuitions/image-upload";
 import { Loader2, Send } from "lucide-react";
@@ -48,11 +49,14 @@ export default function PostTuitionForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
     setError("");
     setMessage("");
 
-    const formData = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
 
     const tuitionData = {
       title: String(formData.get("title") || ""),
@@ -71,15 +75,28 @@ export default function PostTuitionForm() {
 
       if (!result.success) {
         setError(result.message);
+        toast.error(result.message);
         return;
       }
 
       setMessage(result.message);
-      event.currentTarget.reset();
+
+      toast.success("Tuition submitted successfully!", {
+        description: "Your tuition is now pending admin approval.",
+        duration: 4000,
+      });
+
+      formElement.reset();
       setBannerImage("");
+
       router.refresh();
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Tuition submission failed:", err);
+
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -261,13 +278,19 @@ export default function PostTuitionForm() {
 
       {/* Feedback */}
       {error && (
-        <div role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-700">
+        <div
+          role="alert"
+          className="rounded-xl bg-red-50 p-4 text-sm text-red-700"
+        >
           {error}
         </div>
       )}
 
       {message && (
-        <div role="status" className="rounded-xl bg-[#DCE9E2] p-4 text-sm font-medium text-[#183F38]">
+        <div
+          role="status"
+          className="rounded-xl bg-[#DCE9E2] p-4 text-sm font-medium text-[#183F38]"
+        >
           {message}
           <p className="mt-1 text-xs">
             Your tuition is pending admin approval.

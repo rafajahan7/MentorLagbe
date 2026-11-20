@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GraduationCap, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 type UserRole = "student" | "tutor";
@@ -25,7 +26,9 @@ export default function SignUpPage() {
     setError("");
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      const message = "Password must be at least 8 characters.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -33,17 +36,29 @@ export default function SignUpPage() {
 
     try {
       const result = await authClient.signUp.email({
-  name,
-  email,
-  password,
-  callbackURL: "/",
-  role,
-});
+        name,
+        email,
+        password,
+        callbackURL: "/",
+        role,
+      });
 
       if (result.error) {
-        setError(result.error.message || "Registration failed.");
+        const message =
+          result.error.message || "Registration failed.";
+
+        setError(message);
+        toast.error(message);
         return;
       }
+
+      toast.success("Account created successfully!", {
+        description: "Welcome to MentorLagbe!",
+        duration: 3000,
+      });
+
+      // Allow the success notification to display before redirecting.
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       router.push(
         role === "student"
@@ -53,7 +68,9 @@ export default function SignUpPage() {
 
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      const message = "Something went wrong. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -168,7 +185,9 @@ export default function SignUpPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                   </button>
@@ -218,7 +237,7 @@ export default function SignUpPage() {
                 </div>
               </div>
 
-              {/* Error */}
+              {/* Inline Error */}
               {error && (
                 <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
                   {error}

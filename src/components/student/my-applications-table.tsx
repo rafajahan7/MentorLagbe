@@ -6,10 +6,10 @@ import {
   BookOpen,
   CalendarDays,
   Mail,
-  MapPin,
   Trash2,
   Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { cancelApplication } from "@/lib/actions/student";
 
@@ -53,6 +53,7 @@ export default function MyApplicationsTable({
 
       if (!result.success) {
         setError(result.message);
+        toast.error(result.message);
         return;
       }
 
@@ -61,8 +62,13 @@ export default function MyApplicationsTable({
       );
 
       setMessage(result.message);
-    } catch {
-      setError("Something went wrong. Please try again.");
+      toast.success(result.message);
+    } catch (error) {
+      console.error("Application cancellation failed:", error);
+
+      const errorMessage = "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoadingId(null);
     }
@@ -118,10 +124,7 @@ export default function MyApplicationsTable({
       {/* Empty state */}
       {applications.length === 0 ? (
         <div className="rounded-2xl border border-[#183F38]/10 bg-white px-6 py-16 text-center">
-          <BookOpen
-            size={44}
-            className="mx-auto text-[#89928C]"
-          />
+          <BookOpen size={44} className="mx-auto text-[#89928C]" />
 
           <h3 className="mt-4 text-xl font-semibold text-[#183F38]">
             No applications yet
@@ -195,7 +198,7 @@ export default function MyApplicationsTable({
                 <div className="mt-5 flex justify-end">
                   <button
                     type="button"
-                    disabled={loadingId === application._id}
+                    disabled={loadingId !== null}
                     onClick={() => handleCancel(application._id)}
                     className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-50"
                   >
@@ -205,7 +208,9 @@ export default function MyApplicationsTable({
                       <Trash2 size={16} />
                     )}
 
-                    Cancel Application
+                    {loadingId === application._id
+                      ? "Cancelling..."
+                      : "Cancel Application"}
                   </button>
                 </div>
               )}

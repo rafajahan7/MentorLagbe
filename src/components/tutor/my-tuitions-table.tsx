@@ -12,6 +12,8 @@ import {
   BookOpen,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
+
 import {
   deleteMyTuition,
   toggleMyTuitionStatus,
@@ -91,7 +93,7 @@ export default function MyTuitionsTable({
   async function handleUpdate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!editingTuition) return;
+    if (loading || !editingTuition) return;
 
     const monthlyFee = Number(form.monthlyFee);
     const daysPerWeek = Number(form.daysPerWeek);
@@ -108,20 +110,36 @@ export default function MyTuitionsTable({
       daysPerWeek < 1 ||
       daysPerWeek > 7
     ) {
-      setMessage("Please enter valid information in all required fields.");
+      const errorMessage =
+        "Please enter valid information in all required fields.";
+
+      setMessage(errorMessage);
+      toast.error("Invalid information", {
+        description: errorMessage,
+      });
       return;
     }
 
     setLoading(true);
     setMessage("");
 
-    const result = await updateMyTuition(editingTuition._id, {
-      ...form,
-      monthlyFee,
-      daysPerWeek,
-    });
+    try {
+      const result = await updateMyTuition(editingTuition._id, {
+        ...form,
+        monthlyFee,
+        daysPerWeek,
+      });
 
-    if (result.success) {
+      if (!result.success) {
+        setMessage(result.message);
+
+        toast.error("Tuition update failed", {
+          description: result.message,
+        });
+
+        return;
+      }
+
       setTuitions((previous) =>
         previous.map((tuition) =>
           tuition._id === editingTuition._id
@@ -137,14 +155,26 @@ export default function MyTuitionsTable({
 
       closeEditModal();
       setMessage("Tuition updated successfully.");
-    } else {
-      setMessage(result.message);
-    }
 
-    setLoading(false);
+      toast.success("Tuition updated successfully!", {
+        description: "Your tuition information has been saved.",
+      });
+    } catch {
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setMessage(errorMessage);
+
+      toast.error("Unable to update tuition", {
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleDelete(tuitionId: string) {
+    if (loading) return;
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this tuition? Its associated applications will also be deleted."
     );
@@ -154,32 +184,65 @@ export default function MyTuitionsTable({
     setLoading(true);
     setMessage("");
 
-    const result = await deleteMyTuition(tuitionId);
+    try {
+      const result = await deleteMyTuition(tuitionId);
 
-    if (result.success) {
+      if (!result.success) {
+        setMessage(result.message);
+
+        toast.error("Tuition deletion failed", {
+          description: result.message,
+        });
+
+        return;
+      }
+
       setTuitions((previous) =>
         previous.filter((tuition) => tuition._id !== tuitionId)
       );
-      setMessage(result.message);
-    } else {
-      setMessage(result.message);
-    }
 
-    setLoading(false);
+      setMessage(result.message);
+
+      toast.success("Tuition deleted successfully!", {
+        description: "The tuition and its associated applications were removed.",
+      });
+    } catch {
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setMessage(errorMessage);
+
+      toast.error("Unable to delete tuition", {
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleToggle(tuition: Tuition) {
+    if (loading) return;
+
     setLoading(true);
     setMessage("");
 
     const nextStatus = !tuition.isActive;
 
-    const result = await toggleMyTuitionStatus(
-      tuition._id,
-      nextStatus
-    );
+    try {
+      const result = await toggleMyTuitionStatus(
+        tuition._id,
+        nextStatus
+      );
 
-    if (result.success) {
+      if (!result.success) {
+        setMessage(result.message);
+
+        toast.error("Status update failed", {
+          description: result.message,
+        });
+
+        return;
+      }
+
       setTuitions((previous) =>
         previous.map((item) =>
           item._id === tuition._id
@@ -189,11 +252,26 @@ export default function MyTuitionsTable({
       );
 
       setMessage(result.message);
-    } else {
-      setMessage(result.message);
-    }
 
-    setLoading(false);
+      toast.success(
+        nextStatus
+          ? "Tuition activated successfully!"
+          : "Tuition closed successfully!",
+        {
+          description: result.message,
+        }
+      );
+    } catch {
+      const errorMessage = "Something went wrong. Please try again.";
+
+      setMessage(errorMessage);
+
+      toast.error("Unable to update tuition status", {
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -533,7 +611,7 @@ export default function MyTuitionsTable({
                 />
               </div>
 
-              {message && (
+              {message && editingTuition && (
                 <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
                   {message}
                 </p>
