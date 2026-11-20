@@ -28,7 +28,7 @@ export async function POST() {
       );
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, "");
 
     if (!appUrl) {
       throw new Error("NEXT_PUBLIC_APP_URL is missing.");
