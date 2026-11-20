@@ -48,6 +48,30 @@ export async function getApprovedTuitions(): Promise<Tuition[]> {
   }
 }
 
+
+export async function getFeaturedTuitions(): Promise<Tuition[]> {
+  try {
+    const tuitions = await db
+      .collection<TuitionDocument>("tuitions")
+      .find({
+        approvalStatus: "approved",
+        isActive: true,
+      })
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .toArray();
+
+    return tuitions.map((tuition) => ({
+      ...tuition,
+      _id: tuition._id.toString(),
+    }));
+  } catch (error) {
+    console.error("Failed to fetch featured tuitions:", error);
+    return [];
+  }
+}
+
+
 export async function createTuition(formData: {
   title: string;
   subject: string;

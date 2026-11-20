@@ -12,7 +12,6 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#F7F4EC]">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28 lg:px-8">
-
         {/* Left Content */}
         <div className="relative z-10">
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#183F38]/15 bg-white/60 px-4 py-2">
@@ -23,17 +22,18 @@ export default function Hero() {
           </div>
 
           <h1 className="max-w-xl text-5xl font-bold leading-[1.12] tracking-tight text-[#183F38] md:text-6xl lg:text-7xl">
-            Find the right
+            Find your ideal
             <span className="relative mx-2 inline-block text-[#D9A441]">
-              mentor
+              tutor
             </span>
-            for your next big step.
+            or mentorship opportunity.
           </h1>
 
           <p className="mt-7 max-w-lg text-base leading-8 text-[#58645D] md:text-lg">
-            Learning becomes meaningful when you find the right guidance.
-            Discover trusted tutors, explore tuition opportunities, and
-            build a learning journey that moves you forward.
+            Discover trusted tutors, explore available tuition
+            opportunities, or find your next batch of students.
+            MentorLagbe connects learners and educators to make
+            learning more accessible.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-4">
@@ -56,17 +56,27 @@ export default function Hero() {
           <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-[#183F38]/10 pt-7">
             <div>
               <p className="text-2xl font-bold text-[#183F38]">01</p>
-              <p className="mt-1 text-xs text-[#68736C]">Find your tutor</p>
+              <p className="mt-1 text-xs text-[#68736C]">
+                Find opportunities
+              </p>
             </div>
+
             <div className="h-10 w-px bg-[#183F38]/15" />
+
             <div>
               <p className="text-2xl font-bold text-[#183F38]">02</p>
-              <p className="mt-1 text-xs text-[#68736C]">Connect & apply</p>
+              <p className="mt-1 text-xs text-[#68736C]">
+                Connect & apply
+              </p>
             </div>
+
             <div className="h-10 w-px bg-[#183F38]/15" />
+
             <div>
               <p className="text-2xl font-bold text-[#183F38]">03</p>
-              <p className="mt-1 text-xs text-[#68736C]">Start learning</p>
+              <p className="mt-1 text-xs text-[#68736C]">
+                Grow together
+              </p>
             </div>
           </div>
         </div>
@@ -86,6 +96,7 @@ export default function Hero() {
                   Knowledge starts here.
                 </h2>
               </div>
+
               <div className="rounded-2xl bg-white/10 p-3 text-[#D9A441]">
                 <GraduationCap size={28} />
               </div>
@@ -96,6 +107,7 @@ export default function Hero() {
                 <div className="rounded-xl bg-[#DCE9E2] p-3 text-[#183F38]">
                   <BookOpen size={23} />
                 </div>
+
                 <div>
                   <p className="text-sm font-bold text-[#183F38]">
                     Find your learning match
@@ -108,20 +120,30 @@ export default function Hero() {
 
               <div className="mt-5 space-y-3">
                 <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">Mathematics</span>
+                  <span className="text-sm text-[#58645D]">
+                    Mathematics
+                  </span>
                   <span className="rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38]">
                     Popular
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">English</span>
-                  <span className="text-xs text-[#68736C]">Explore</span>
+                  <span className="text-sm text-[#58645D]">
+                    English
+                  </span>
+                  <span className="text-xs text-[#68736C]">
+                    Explore
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">Science</span>
-                  <span className="text-xs text-[#68736C]">Explore</span>
+                  <span className="text-sm text-[#58645D]">
+                    Science
+                  </span>
+                  <span className="text-xs text-[#68736C]">
+                    Explore
+                  </span>
                 </div>
               </div>
 

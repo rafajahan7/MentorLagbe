@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, BookOpen, X } from "lucide-react";
 
 import TuitionCard from "@/components/tuitions/tuition-card";
@@ -12,10 +13,20 @@ interface TuitionListProps {
 }
 
 export default function TuitionList({ tuitions }: TuitionListProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const urlSubject = searchParams.get("subject") || "all";
+
   const [search, setSearch] = useState("");
-  const [subject, setSubject] = useState("all");
+  const [subject, setSubject] = useState(urlSubject);
   const [classLevel, setClassLevel] = useState("all");
   const [mode, setMode] = useState("all");
+
+  // Keep subject selection synchronized with the URL.
+  useEffect(() => {
+    setSubject(urlSubject);
+  }, [urlSubject]);
 
   const subjects = useMemo(
     () => [...new Set(tuitions.map((tuition) => tuition.subject))].sort(),
@@ -29,12 +40,15 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
 
   const filteredTuitions = useMemo(() => {
     return tuitions.filter((tuition) => {
+      const searchTerm = search.toLowerCase().trim();
+
       const searchMatch =
-        tuition.title.toLowerCase().includes(search.toLowerCase()) ||
-        tuition.subject.toLowerCase().includes(search.toLowerCase());
+        tuition.title.toLowerCase().includes(searchTerm) ||
+        tuition.subject.toLowerCase().includes(searchTerm);
 
       const subjectMatch =
-        subject === "all" || tuition.subject === subject;
+        subject === "all" ||
+        tuition.subject.toLowerCase() === subject.toLowerCase();
 
       const classMatch =
         classLevel === "all" || tuition.classLevel === classLevel;
@@ -46,11 +60,31 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
     });
   }, [tuitions, search, subject, classLevel, mode]);
 
+  function handleSubjectChange(value: string) {
+    setSubject(value);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === "all") {
+      params.delete("subject");
+    } else {
+      params.set("subject", value);
+    }
+
+    const query = params.toString();
+
+    router.replace(query ? `/tuitions?${query}` : "/tuitions", {
+      scroll: false,
+    });
+  }
+
   function clearFilters() {
     setSearch("");
     setSubject("all");
     setClassLevel("all");
     setMode("all");
+
+    router.replace("/tuitions", { scroll: false });
   }
 
   const hasActiveFilters =
@@ -120,7 +154,7 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             <select
               id="subject-filter"
               value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => handleSubjectChange(e.target.value)}
               className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
             >
               <option value="all">All Subjects</option>
