@@ -47,6 +47,14 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function isValidRole(role: unknown): role is UserRole {
+  return (
+    role === "student" ||
+    role === "tutor" ||
+    role === "admin"
+  );
+}
+
 export default function Navbar() {
   const router = useRouter();
 
@@ -56,12 +64,13 @@ export default function Navbar() {
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
-  const role = user?.role as UserRole | undefined;
+  const role = isValidRole(user?.role) ? user.role : undefined;
 
-  const dashboardLink =
-    role && role in dashboardRoutes
-      ? dashboardRoutes[role]
-      : "/";
+  const dashboardLink = role
+    ? dashboardRoutes[role]
+    : "/";
+
+  const profileLink = "/dashboard/profile";
 
   async function handleSignOut() {
     if (signingOut) return;
@@ -72,10 +81,9 @@ export default function Navbar() {
       const result = await authClient.signOut();
 
       if (result.error) {
-        const message =
-          result.error.message || "Could not sign out. Please try again.";
-
-        toast.error(message);
+        toast.error(
+          result.error.message || "Could not sign out. Please try again."
+        );
         setSigningOut(false);
         return;
       }
@@ -84,18 +92,14 @@ export default function Navbar() {
 
       toast.success("Signed out successfully!", {
         description: "See you again at MentorLagbe!",
-        duration: 3000,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      router.push("/");
+      router.replace("/");
       router.refresh();
     } catch (error) {
       console.error("Sign out failed:", error);
 
       toast.error("Something went wrong while signing out.");
-
       setSigningOut(false);
     }
   }
@@ -108,6 +112,7 @@ export default function Navbar() {
         <Link
           href="/"
           className="flex shrink-0 items-center gap-3"
+          aria-label="MentorLagbe Home"
         >
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#183F38] text-[#F7F4EC]">
             <GraduationCap size={25} />
@@ -124,7 +129,10 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav
+          className="hidden items-center gap-7 lg:flex"
+          aria-label="Main navigation"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -151,13 +159,14 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href="/profile"
+                href={profileLink}
                 className="flex items-center gap-2.5 rounded-full border border-[#183F38]/10 px-3 py-2 transition hover:bg-[#DCE9E2]"
+                aria-label="Update your profile"
               >
                 {user.image ? (
                   <img
                     src={user.image}
-                    alt={`${user.name}'s profile`}
+                    alt={`${user.name || "User"}'s profile`}
                     className="h-9 w-9 rounded-full object-cover"
                   />
                 ) : (
@@ -168,10 +177,10 @@ export default function Navbar() {
 
                 <div className="flex flex-col items-start">
                   <span className="max-w-[110px] truncate text-sm font-bold text-[#183F38]">
-                    {user.name}
+                    {user.name || "User"}
                   </span>
 
-                  {role && roleStyles[role] && (
+                  {role && (
                     <span
                       className={`mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold capitalize ${roleStyles[role]}`}
                     >
@@ -182,9 +191,10 @@ export default function Navbar() {
               </Link>
 
               <button
+                type="button"
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="rounded-full border border-[#183F38]/25 px-4 py-2 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:opacity-50"
+                className="rounded-full border border-[#183F38]/25 px-4 py-2 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {signingOut ? "Signing out..." : "Sign Out"}
               </button>
@@ -210,10 +220,12 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
+          type="button"
+          onClick={() => setMenuOpen((previous) => !previous)}
           className="rounded-lg p-2 text-[#183F38] transition hover:bg-[#DCE9E2] lg:hidden"
-          aria-label="Toggle navigation"
+          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
         >
           {menuOpen ? <X size={25} /> : <Menu size={25} />}
         </button>
@@ -221,8 +233,14 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       {menuOpen && (
-        <div className="border-t border-[#183F38]/10 bg-[#F7F4EC] px-5 py-5 lg:hidden">
-          <nav className="flex flex-col gap-4">
+        <div
+          id="mobile-navigation"
+          className="border-t border-[#183F38]/10 bg-[#F7F4EC] px-5 py-5 lg:hidden"
+        >
+          <nav
+            className="flex flex-col gap-4"
+            aria-label="Mobile navigation"
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -244,14 +262,14 @@ export default function Navbar() {
 
               {/* Mobile Profile */}
               <Link
-                href="/profile"
+                href={profileLink}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3"
               >
                 {user.image ? (
                   <img
                     src={user.image}
-                    alt={`${user.name}'s profile`}
+                    alt={`${user.name || "User"}'s profile`}
                     className="h-11 w-11 rounded-full object-cover"
                   />
                 ) : (
@@ -262,10 +280,10 @@ export default function Navbar() {
 
                 <div>
                   <p className="font-bold text-[#183F38]">
-                    {user.name}
+                    {user.name || "User"}
                   </p>
 
-                  {role && roleStyles[role] && (
+                  {role && (
                     <span
                       className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold capitalize ${roleStyles[role]}`}
                     >
@@ -285,7 +303,7 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href="/profile"
+                href={profileLink}
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 text-sm font-semibold text-[#183F38]"
               >
@@ -294,9 +312,10 @@ export default function Navbar() {
               </Link>
 
               <button
+                type="button"
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="flex items-center gap-2 text-left text-sm font-semibold text-red-600 disabled:opacity-50"
+                className="flex items-center gap-2 text-left text-sm font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <LogOut size={17} />
                 {signingOut ? "Signing out..." : "Sign Out"}
