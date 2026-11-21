@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, BookOpen, X } from "lucide-react";
 
@@ -16,17 +16,19 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const urlSubject = searchParams.get("subject") || "all";
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [subject, setSubject] = useState(searchParams.get("subject") || "all");
+  const [classLevel, setClassLevel] = useState(
+    searchParams.get("classLevel") || "all"
+  );
+  const [mode, setMode] = useState(searchParams.get("mode") || "all");
 
-  const [search, setSearch] = useState("");
-  const [subject, setSubject] = useState(urlSubject);
-  const [classLevel, setClassLevel] = useState("all");
-  const [mode, setMode] = useState("all");
-
-  // Keep subject selection synchronized with the URL.
   useEffect(() => {
-    setSubject(urlSubject);
-  }, [urlSubject]);
+    setSearch(searchParams.get("search") || "");
+    setSubject(searchParams.get("subject") || "all");
+    setClassLevel(searchParams.get("classLevel") || "all");
+    setMode(searchParams.get("mode") || "all");
+  }, [searchParams]);
 
   const subjects = useMemo(
     () => [...new Set(tuitions.map((tuition) => tuition.subject))].sort(),
@@ -38,44 +40,27 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
     [tuitions]
   );
 
-  const filteredTuitions = useMemo(() => {
-    return tuitions.filter((tuition) => {
-      const searchTerm = search.toLowerCase().trim();
-
-      const searchMatch =
-        tuition.title.toLowerCase().includes(searchTerm) ||
-        tuition.subject.toLowerCase().includes(searchTerm);
-
-      const subjectMatch =
-        subject === "all" ||
-        tuition.subject.toLowerCase() === subject.toLowerCase();
-
-      const classMatch =
-        classLevel === "all" || tuition.classLevel === classLevel;
-
-      const modeMatch =
-        mode === "all" || tuition.mode === mode;
-
-      return searchMatch && subjectMatch && classMatch && modeMatch;
-    });
-  }, [tuitions, search, subject, classLevel, mode]);
-
-  function handleSubjectChange(value: string) {
-    setSubject(value);
-
+  function updateFilters(values: Record<string, string>) {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (value === "all") {
-      params.delete("subject");
-    } else {
-      params.set("subject", value);
-    }
+    Object.entries(values).forEach(([key, value]) => {
+      if (!value || value === "all") {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
 
     const query = params.toString();
 
     router.replace(query ? `/tuitions?${query}` : "/tuitions", {
       scroll: false,
     });
+  }
+
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    updateFilters({ search: search.trim() });
   }
 
   function clearFilters() {
@@ -95,7 +80,6 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-14">
-      {/* Heading */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-bold tracking-[0.2em] text-[#B58A35]">
@@ -112,15 +96,13 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
         </div>
 
         <p className="text-sm font-semibold text-[#183F38]">
-          {filteredTuitions.length} of {tuitions.length} tuitions
+          {tuitions.length} matching tuitions
         </p>
       </div>
 
-      {/* Search and Filters */}
       <div className="rounded-3xl border border-[#183F38]/10 bg-white p-5 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          {/* Search */}
-          <div>
+          <form onSubmit={handleSearch}>
             <label
               htmlFor="tuition-search"
               className="mb-2 block text-sm font-semibold text-[#183F38]"
@@ -139,10 +121,17 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
                 placeholder="Search title or subject..."
                 className="w-full bg-transparent py-3 text-sm text-[#242C2A] outline-none placeholder:text-[#89918B]"
               />
-            </div>
-          </div>
 
-          {/* Subject Filter */}
+              <button
+                type="submit"
+                aria-label="Search tuitions"
+                className="text-[#183F38] hover:text-[#B58A35]"
+              >
+                <Search size={18} />
+              </button>
+            </div>
+          </form>
+
           <div>
             <label
               htmlFor="subject-filter"
@@ -154,7 +143,11 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             <select
               id="subject-filter"
               value={subject}
-              onChange={(e) => handleSubjectChange(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSubject(value);
+                updateFilters({ subject: value });
+              }}
               className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
             >
               <option value="all">All Subjects</option>
@@ -167,7 +160,6 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             </select>
           </div>
 
-          {/* Class Level Filter */}
           <div>
             <label
               htmlFor="class-filter"
@@ -179,7 +171,11 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             <select
               id="class-filter"
               value={classLevel}
-              onChange={(e) => setClassLevel(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setClassLevel(value);
+                updateFilters({ classLevel: value });
+              }}
               className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
             >
               <option value="all">All Class Levels</option>
@@ -192,7 +188,6 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             </select>
           </div>
 
-          {/* Mode Filter */}
           <div>
             <label
               htmlFor="mode-filter"
@@ -204,7 +199,11 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
             <select
               id="mode-filter"
               value={mode}
-              onChange={(e) => setMode(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setMode(value);
+                updateFilters({ mode: value });
+              }}
               className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
             >
               <option value="all">All Modes</option>
@@ -214,7 +213,6 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
           </div>
         </div>
 
-        {/* Clear Filters */}
         {hasActiveFilters && (
           <button
             type="button"
@@ -227,11 +225,10 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
         )}
       </div>
 
-      {/* Results */}
       <div className="mt-10">
-        {filteredTuitions.length > 0 ? (
+        {tuitions.length > 0 ? (
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTuitions.map((tuition) => (
+            {tuitions.map((tuition) => (
               <TuitionCard key={tuition._id} tuition={tuition} />
             ))}
           </div>

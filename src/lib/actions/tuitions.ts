@@ -26,14 +26,55 @@ interface TuitionDocument extends Omit<Tuition, "_id"> {
   _id: ObjectId;
 }
 
-export async function getApprovedTuitions(): Promise<Tuition[]> {
+interface TuitionFilters {
+  search?: string;
+  subject?: string;
+  classLevel?: string;
+  mode?: "Online" | "Offline" | "";
+}
+
+export async function getApprovedTuitions(
+  filters?: TuitionFilters
+): Promise<Tuition[]> {
   try {
+    const query: Record<string, unknown> = {
+      approvalStatus: "approved",
+      isActive: true,
+    };
+
+    // Search by tuition title or subject
+    if (filters?.search?.trim()) {
+      const searchTerm = filters.search.trim();
+
+      const escapedSearch = searchTerm.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
+
+      query.$or = [
+        { title: { $regex: escapedSearch, $options: "i" } },
+        { subject: { $regex: escapedSearch, $options: "i" } },
+      ];
+    }
+
+    // Filter by subject
+    if (filters?.subject?.trim()) {
+      query.subject = filters.subject.trim();
+    }
+
+    // Filter by class level
+    if (filters?.classLevel?.trim()) {
+      query.classLevel = filters.classLevel.trim();
+    }
+
+    // Filter by learning mode
+    if (filters?.mode === "Online" || filters?.mode === "Offline") {
+      query.mode = filters.mode;
+    }
+
     const tuitions = await db
       .collection<TuitionDocument>("tuitions")
-      .find({
-        approvalStatus: "approved",
-        isActive: true,
-      })
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray();
 
@@ -43,11 +84,9 @@ export async function getApprovedTuitions(): Promise<Tuition[]> {
     }));
   } catch (error) {
     console.error("Failed to fetch tuitions:", error);
-
     return [];
   }
 }
-
 
 export async function getFeaturedTuitions(): Promise<Tuition[]> {
   try {
@@ -71,8 +110,6 @@ export async function getFeaturedTuitions(): Promise<Tuition[]> {
   }
 }
 
-
-
 export async function createTuition(formData: {
   title: string;
   subject: string;
@@ -90,7 +127,6 @@ export async function createTuition(formData: {
 
     const requestHeaders = await headers();
 
-    // Check the logged-in tutor
     const session = await auth.api.getSession({
       headers: requestHeaders,
     });
@@ -102,7 +138,6 @@ export async function createTuition(formData: {
       };
     }
 
-    // Validate tuition information
     if (
       !formData.title.trim() ||
       !formData.subject.trim() ||
@@ -122,7 +157,6 @@ export async function createTuition(formData: {
       };
     }
 
-    // Retrieve Better Auth JWT
     const { token } = await auth.api.getToken({
       headers: requestHeaders,
     });
@@ -137,7 +171,6 @@ export async function createTuition(formData: {
     const API_URL =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-    // Send tuition to Express backend
     const response = await fetch(`${API_URL}/api/tuitions`, {
       method: "POST",
       headers: {
@@ -167,7 +200,6 @@ export async function createTuition(formData: {
     };
   }
 }
-
 
 export async function getPendingTuitions() {
   try {
@@ -201,7 +233,9 @@ export async function getPendingTuitions() {
   }
 }
 
-export async function getTuitionById(id: string): Promise<Tuition | null> {
+export async function getTuitionById(
+  id: string
+): Promise<Tuition | null> {
   try {
     if (!ObjectId.isValid(id)) {
       return null;
@@ -228,4 +262,3 @@ export async function getTuitionById(id: string): Promise<Tuition | null> {
     return null;
   }
 }
-

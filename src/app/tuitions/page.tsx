@@ -11,11 +11,31 @@ export const metadata = {
     "Explore approved tuition opportunities and find the right learning match.",
 };
 
-async function TuitionResults() {
-  // Wait until request time before accessing the database.
+interface TuitionsPageProps {
+  searchParams: Promise<{
+    search?: string;
+    subject?: string;
+    classLevel?: string;
+    mode?: string;
+  }>;
+}
+
+async function TuitionResults({
+  searchParams,
+}: TuitionsPageProps) {
   await connection();
 
-  const tuitions = await getApprovedTuitions();
+  const params = await searchParams;
+
+  const tuitions = await getApprovedTuitions({
+    search: params.search,
+    subject: params.subject,
+    classLevel: params.classLevel,
+    mode:
+      params.mode === "Online" || params.mode === "Offline"
+        ? params.mode
+        : "",
+  });
 
   return <TuitionList tuitions={tuitions} />;
 }
@@ -40,10 +60,11 @@ function TuitionLoading() {
   );
 }
 
-export default function TuitionsPage() {
+export default function TuitionsPage({
+  searchParams,
+}: TuitionsPageProps) {
   return (
     <div className="min-h-screen bg-[#F7F4EC]">
-      {/* Page Heading */}
       <section className="border-b border-[#183F38]/10 bg-white px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <span className="text-xs font-bold tracking-[0.2em] text-[#B58A35]">
@@ -62,9 +83,8 @@ export default function TuitionsPage() {
         </div>
       </section>
 
-      {/* Search, Filters and Tuition Cards */}
       <Suspense fallback={<TuitionLoading />}>
-        <TuitionResults />
+        <TuitionResults searchParams={searchParams} />
       </Suspense>
     </div>
   );
