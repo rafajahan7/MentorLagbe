@@ -23,6 +23,9 @@ export default function SignUpPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (loading) return;
+
     setError("");
 
     if (password.length < 8) {
@@ -36,8 +39,8 @@ export default function SignUpPage() {
 
     try {
       const result = await authClient.signUp.email({
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim(),
         password,
         callbackURL: "/",
         role,
@@ -49,29 +52,28 @@ export default function SignUpPage() {
 
         setError(message);
         toast.error(message);
+        setLoading(false);
         return;
       }
 
       toast.success("Account created successfully!", {
         description: "Welcome to MentorLagbe!",
-        duration: 3000,
       });
 
-      // Allow the success notification to display before redirecting.
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      router.push(
+      const dashboardPath =
         role === "student"
           ? "/dashboard/student"
-          : "/dashboard/tutor"
-      );
+          : "/dashboard/tutor";
 
+      router.replace(dashboardPath);
       router.refresh();
-    } catch {
+    } catch (err) {
+      console.error("Sign-up error:", err);
+
       const message = "Something went wrong. Please try again.";
+
       setError(message);
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   }
@@ -134,57 +136,76 @@ export default function SignUpPage() {
 
               {/* Name */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#242C2A]">
+                <label
+                  htmlFor="name"
+                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                >
                   Full Name
                 </label>
 
                 <input
+                  id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter your full name"
+                  autoComplete="name"
                   required
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10"
+                  disabled={loading}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#242C2A]">
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                >
                   Email Address
                 </label>
 
                 <input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
+                  autoComplete="email"
                   required
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10"
+                  disabled={loading}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#242C2A]">
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                >
                   Password
                 </label>
 
                 <div className="relative">
                   <input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="At least 8 characters"
+                    autoComplete="new-password"
                     required
                     minLength={8}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10"
+                    disabled={loading}
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
                   />
 
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    disabled={loading}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 disabled:cursor-not-allowed"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -203,8 +224,9 @@ export default function SignUpPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
+                    disabled={loading}
                     onClick={() => setRole("student")}
-                    className={`rounded-xl border p-4 text-left transition ${
+                    className={`rounded-xl border p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
                       role === "student"
                         ? "border-[#183F38] bg-[#DCE9E2]"
                         : "border-gray-200 hover:border-[#183F38]/40"
@@ -220,8 +242,9 @@ export default function SignUpPage() {
 
                   <button
                     type="button"
+                    disabled={loading}
                     onClick={() => setRole("tutor")}
-                    className={`rounded-xl border p-4 text-left transition ${
+                    className={`rounded-xl border p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
                       role === "tutor"
                         ? "border-[#183F38] bg-[#DCE9E2]"
                         : "border-gray-200 hover:border-[#183F38]/40"
@@ -239,7 +262,10 @@ export default function SignUpPage() {
 
               {/* Inline Error */}
               {error && (
-                <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                <p
+                  role="alert"
+                  className="rounded-lg bg-red-50 p-3 text-sm text-red-600"
+                >
                   {error}
                 </p>
               )}
@@ -250,8 +276,17 @@ export default function SignUpPage() {
                 disabled={loading}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183F38] px-5 py-3.5 font-semibold text-white transition hover:bg-[#28584E] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Creating account..." : "Create Account"}
-                {!loading && <ArrowRight size={18} />}
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Creating account...
+                  </>
+                ) : (
+                  <>
+                    Create Account
+                    <ArrowRight size={18} />
+                  </>
+                )}
               </button>
             </form>
 

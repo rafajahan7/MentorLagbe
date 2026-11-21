@@ -3,6 +3,7 @@
 
 import { auth } from "@/lib/auth";
 import db from "@/lib/db";
+import { apiRequest } from "@/lib/api";
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
 
@@ -134,42 +135,55 @@ export async function getMyApplications() {
 
 export async function cancelApplication(applicationId: string) {
   try {
+    const requestHeaders = await headers();
+
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: requestHeaders,
     });
 
     if (!session || session.user.role !== "student") {
       return {
         success: false,
-        message: "Unauthorized access.",
+        message: "Authentication required. Please sign in.",
       };
     }
 
-    if (!ObjectId.isValid(applicationId)) {
-      return {
-        success: false,
-        message: "Invalid application ID.",
-      };
-    }
-
-    const result = await db.collection("applications").deleteOne({
-      _id: new ObjectId(applicationId),
-      studentEmail: session.user.email,
-      status: "pending",
+    const { token} = await auth.api.getToken({
+      headers: requestHeaders,
     });
 
-    if (result.deletedCount === 0) {
+    if ( !token) {
       return {
         success: false,
-        message:
-          "Application not found or it can no longer be cancelled.",
+        message: "Could not retrieve authentication token.",
       };
     }
 
-    return {
-      success: true,
-      message: "Application cancelled successfully.",
-    };
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+    const response = await fetch(
+      `${API_URL}/api/applications/${applicationId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: result.message || "Could not cancel application.",
+      };
+    }
+
+    return result;
   } catch (error) {
     console.error("Cancel application error:", error);
 
@@ -187,8 +201,10 @@ export async function applyForTuition(data: {
   studentNote: string;
 }) {
   try {
+    const requestHeaders = await headers();
+
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: requestHeaders,
     });
 
     if (!session || session.user.role !== "student") {
@@ -219,52 +235,47 @@ export async function applyForTuition(data: {
       };
     }
 
-    const studentEmail = session.user.email;
-    const studentName = session.user.name;
-
-    const tuition = await db.collection("tuitions").findOne({
-      _id: new ObjectId(tuitionId),
-      approvalStatus: "approved",
-      isActive: true,
+    const { token} = await auth.api.getToken({
+      headers: requestHeaders,
     });
 
-    if (!tuition) {
+    if ( !token) {
       return {
         success: false,
-        message: "This tuition is no longer available.",
+        message: "Could not retrieve authentication token.",
       };
     }
 
-    const existingApplication = await db.collection("applications").findOne({
-      tuitionId,
-      studentEmail,
-    });
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-    if (existingApplication) {
+    const response = await fetch(
+      `${API_URL}/api/applications/${tuitionId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentPhone: studentPhone.trim(),
+          preferredSchedule: preferredSchedule.trim(),
+          studentNote: studentNote.trim(),
+        }),
+        cache: "no-store",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
       return {
         success: false,
-        message: "You have already applied for this tuition.",
+        message: result.message || "Could not submit application.",
       };
     }
 
-    await db.collection("applications").insertOne({
-      tuitionId,
-      tuitionTitle: tuition.title,
-      monthlyFee: tuition.monthlyFee,
-      tutorEmail: tuition.tutorEmail,
-      studentName,
-      studentEmail,
-      studentPhone: studentPhone.trim(),
-      preferredSchedule: preferredSchedule.trim(),
-      studentNote: studentNote.trim(),
-      status: "pending",
-      appliedAt: new Date(),
-    });
-
-    return {
-      success: true,
-      message: "Your application has been submitted successfully!",
-    };
+    return result;
   } catch (error) {
     console.error("Apply for tuition error:", error);
 

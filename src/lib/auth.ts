@@ -2,6 +2,7 @@
 import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { jwt } from "better-auth/plugins";
 import db from "./db";
 
 export const auth = betterAuth({
@@ -86,6 +87,8 @@ export const auth = betterAuth({
       },
     },
   },
+
+   plugins: [jwt()],
 
   trustedOrigins: [
   "http://localhost:3000",

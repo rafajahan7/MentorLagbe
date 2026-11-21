@@ -24,12 +24,15 @@ export default function SignInPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (loading) return;
+
     setError("");
     setLoading(true);
 
     try {
       const result = await authClient.signIn.email({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -39,11 +42,11 @@ export default function SignInPage() {
 
         setError(message);
         toast.error(message);
+        setLoading(false);
         return;
       }
 
-      const user = result.data?.user;
-      const role = user?.role;
+      const role = result.data?.user?.role;
 
       let dashboardPath = "/";
 
@@ -57,19 +60,17 @@ export default function SignInPage() {
 
       toast.success("Signed in successfully!", {
         description: "Welcome back to MentorLagbe!",
-        duration: 3000,
       });
 
-      // Allow the notification to appear before navigation.
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      router.push(dashboardPath);
+      router.replace(dashboardPath);
       router.refresh();
-    } catch {
+    } catch (err) {
+      console.error("Sign-in error:", err);
+
       const message = "Something went wrong. Please try again.";
+
       setError(message);
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   }
@@ -131,43 +132,55 @@ export default function SignInPage() {
             </p>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-
               {/* Email */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#242C2A]">
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                >
                   Email Address
                 </label>
 
                 <input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
+                  autoComplete="email"
                   required
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10"
+                  disabled={loading}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#242C2A]">
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                >
                   Password
                 </label>
 
                 <div className="relative">
                   <input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     required
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10"
+                    disabled={loading}
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
                   />
 
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    disabled={loading}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 disabled:cursor-not-allowed"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
@@ -181,7 +194,10 @@ export default function SignInPage() {
 
               {/* Error */}
               {error && (
-                <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                <p
+                  role="alert"
+                  className="rounded-lg bg-red-50 p-3 text-sm text-red-600"
+                >
                   {error}
                 </p>
               )}
@@ -192,8 +208,17 @@ export default function SignInPage() {
                 disabled={loading}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183F38] px-5 py-3.5 font-semibold text-white transition hover:bg-[#28584E] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Signing in..." : "Sign In"}
-                {!loading && <ArrowRight size={18} />}
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight size={18} />
+                  </>
+                )}
               </button>
             </form>
 

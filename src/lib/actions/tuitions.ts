@@ -72,6 +72,7 @@ export async function getFeaturedTuitions(): Promise<Tuition[]> {
 }
 
 
+
 export async function createTuition(formData: {
   title: string;
   subject: string;
@@ -87,56 +88,33 @@ export async function createTuition(formData: {
     const { auth } = await import("@/lib/auth");
     const { headers } = await import("next/headers");
 
+    const requestHeaders = await headers();
+
+    // Check the logged-in tutor
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: requestHeaders,
     });
 
-    if (!session) {
-      return { success: false, message: "Please sign in first." };
-    }
-
-    if (session.user.role !== "tutor") {
+    if (!session || session.user.role !== "tutor") {
       return {
         success: false,
         message: "Only tutors can post tuitions.",
       };
     }
 
-    const user = await db.collection("users").findOne({
-      email: session.user.email,
-    });
-
-    if (!user) {
-      return { success: false, message: "User profile not found." };
-    }
-
-    const plan = user.plan === "pro" ? "pro" : "free";
-
-    // Free tutors can have at most two tuition posts.
-    if (plan === "free") {
-      const existingPosts = await db.collection("tuitions").countDocuments({
-        tutorEmail: session.user.email,
-      });
-
-      if (existingPosts >= 2) {
-        return {
-          success: false,
-          message:
-            "Free tutors can post a maximum of 2 tuitions. Upgrade to Pro for unlimited posts.",
-        };
-      }
-    }
-
-    // Basic server-side validation
+    // Validate tuition information
     if (
       !formData.title.trim() ||
       !formData.subject.trim() ||
       !formData.classLevel.trim() ||
       !formData.description.trim() ||
+      !formData.location.trim() ||
+      !Number.isFinite(formData.monthlyFee) ||
       formData.monthlyFee <= 0 ||
       !Number.isInteger(formData.daysPerWeek) ||
       formData.daysPerWeek < 1 ||
-      formData.daysPerWeek > 7
+      formData.daysPerWeek > 7 ||
+      !["Online", "Offline"].includes(formData.mode)
     ) {
       return {
         success: false,
@@ -144,24 +122,42 @@ export async function createTuition(formData: {
       };
     }
 
-    await db.collection("tuitions").insertOne({
-      ...formData,
-      title: formData.title.trim(),
-      subject: formData.subject.trim(),
-      classLevel: formData.classLevel.trim(),
-      description: formData.description.trim(),
-      location: formData.location.trim(),
-      tutorName: session.user.name,
-      tutorEmail: session.user.email,
-      approvalStatus: "pending",
-      isActive: true,
-      createdAt: new Date(),
+    // Retrieve Better Auth JWT
+    const { token } = await auth.api.getToken({
+      headers: requestHeaders,
     });
 
-    return {
-      success: true,
-      message: "Tuition submitted successfully! Awaiting admin approval.",
-    };
+    if (!token) {
+      return {
+        success: false,
+        message: "Could not retrieve authentication token.",
+      };
+    }
+
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+    // Send tuition to Express backend
+    const response = await fetch(`${API_URL}/api/tuitions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: result.message || "Could not create tuition.",
+      };
+    }
+
+    return result;
   } catch (error) {
     console.error("Create tuition error:", error);
 
@@ -171,6 +167,7 @@ export async function createTuition(formData: {
     };
   }
 }
+
 
 export async function getPendingTuitions() {
   try {
