@@ -3,7 +3,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   GraduationCap,
   Menu,
@@ -56,8 +55,6 @@ function isValidRole(role: unknown): role is UserRole {
 }
 
 export default function Navbar() {
-  const router = useRouter();
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -82,8 +79,10 @@ export default function Navbar() {
 
       if (result.error) {
         toast.error(
-          result.error.message || "Could not sign out. Please try again."
+          result.error.message ||
+            "Could not sign out. Please try again."
         );
+
         setSigningOut(false);
         return;
       }
@@ -94,8 +93,9 @@ export default function Navbar() {
         description: "See you again at MentorLagbe!",
       });
 
-      router.replace("/");
-      router.refresh();
+      // Force a fresh page load so the Navbar gets the
+      // updated authentication state from the server.
+      window.location.replace("/");
     } catch (error) {
       console.error("Sign out failed:", error);
 
