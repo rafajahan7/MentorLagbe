@@ -65,12 +65,12 @@ function TuitionLoading() {
         {[1, 2, 3, 4, 5, 6].map((item) => (
           <div
             key={item}
-            className="animate-pulse rounded-2xl border border-[#183F38]/10 bg-white p-6"
+            className="animate-pulse rounded-2xl border border-[#183F38]/10 bg-white p-6 dark:border-white/10 dark:bg-[#202B27]"
           >
-            <div className="h-40 rounded-xl bg-[#DCE9E2]" />
-            <div className="mt-5 h-4 w-1/3 rounded bg-[#DCE9E2]" />
-            <div className="mt-3 h-6 w-3/4 rounded bg-[#DCE9E2]" />
-            <div className="mt-4 h-4 w-1/2 rounded bg-[#DCE9E2]" />
+            <div className="h-40 rounded-xl bg-[#DCE9E2] dark:bg-[#35443D]" />
+            <div className="mt-5 h-4 w-1/3 rounded bg-[#DCE9E2] dark:bg-[#35443D]" />
+            <div className="mt-3 h-6 w-3/4 rounded bg-[#DCE9E2] dark:bg-[#35443D]" />
+            <div className="mt-4 h-4 w-1/2 rounded bg-[#DCE9E2] dark:bg-[#35443D]" />
           </div>
         ))}
       </div>
@@ -82,19 +82,19 @@ export default function TuitionsPage({
   searchParams,
 }: TuitionsPageProps) {
   return (
-    <div className="min-h-screen bg-[#F7F4EC]">
-      <section className="border-b border-[#183F38]/10 bg-white px-6 py-16">
+    <div className="min-h-screen bg-[#F7F4EC] transition-colors dark:bg-[#151D1A]">
+      <section className="border-b border-[#183F38]/10 bg-white px-6 py-16 transition-colors dark:border-white/10 dark:bg-[#202B27]">
         <div className="mx-auto max-w-7xl">
-          <span className="text-xs font-bold tracking-[0.2em] text-[#B58A35]">
+          <span className="text-xs font-bold tracking-[0.2em] text-[#B58A35] dark:text-[#E5B957]">
             EXPLORE OPPORTUNITIES
           </span>
 
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-[#183F38] md:text-5xl">
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-[#183F38] dark:text-[#F7F4EC] md:text-5xl">
             Find your perfect
             <span className="text-[#D9A441]"> tuition.</span>
           </h1>
 
-          <p className="mt-5 max-w-2xl leading-8 text-[#68736C]">
+          <p className="mt-5 max-w-2xl leading-8 text-[#68736C] dark:text-[#B7C4BC]">
             Discover tuition opportunities that match your subject,
             academic level, preferred learning mode, and budget.
           </p>
