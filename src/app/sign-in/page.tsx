@@ -76,8 +76,8 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F7F4EC] px-5 py-12">
-      <div className="mx-auto grid min-h-[80vh] max-w-6xl overflow-hidden rounded-3xl bg-white shadow-xl lg:grid-cols-2">
+    <main className="min-h-screen bg-background px-5 py-12">
+      <div className="mx-auto grid min-h-[80vh] max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-xl lg:grid-cols-2">
 
         {/* Left Side */}
         <section className="flex flex-col justify-between bg-[#183F38] p-8 text-white md:p-12">
@@ -117,17 +117,17 @@ export default function SignInPage() {
         </section>
 
         {/* Right Side */}
-        <section className="flex items-center justify-center p-7 md:p-12">
+        <section className="flex items-center justify-center bg-card p-7 md:p-12">
           <div className="w-full max-w-md">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[2px] text-[#B58A35]">
               Your account
             </p>
 
-            <h2 className="text-3xl font-bold text-[#183F38]">
+            <h2 className="text-3xl font-bold text-card-foreground">
               Welcome back
             </h2>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-muted-foreground">
               Enter your details to access your account.
             </p>
 
@@ -136,7 +136,7 @@ export default function SignInPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                  className="mb-2 block text-sm font-semibold text-foreground"
                 >
                   Email Address
                 </label>
@@ -150,7 +150,7 @@ export default function SignInPage() {
                   autoComplete="email"
                   required
                   disabled={loading}
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
+                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 dark:focus:border-[#D9A441] disabled:opacity-60"
                 />
               </div>
 
@@ -158,7 +158,7 @@ export default function SignInPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="mb-2 block text-sm font-semibold text-[#242C2A]"
+                  className="mb-2 block text-sm font-semibold text-foreground"
                 >
                   Password
                 </label>
@@ -173,14 +173,14 @@ export default function SignInPage() {
                     autoComplete="current-password"
                     required
                     disabled={loading}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 disabled:opacity-60"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 pr-12 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 dark:focus:border-[#D9A441] disabled:opacity-60"
                   />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     disabled={loading}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 disabled:cursor-not-allowed"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground disabled:cursor-not-allowed"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
@@ -196,7 +196,7 @@ export default function SignInPage() {
               {error && (
                 <p
                   role="alert"
-                  className="rounded-lg bg-red-50 p-3 text-sm text-red-600"
+                  className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-400"
                 >
                   {error}
                 </p>
@@ -206,11 +206,11 @@ export default function SignInPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183F38] px-5 py-3.5 font-semibold text-white transition hover:bg-[#28584E] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183F38] px-5 py-3.5 font-semibold text-white transition hover:bg-[#28584E] dark:bg-[#D9A441] dark:text-[#242C2A] dark:hover:bg-[#E8B94F] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white dark:border-[#242C2A]/30 dark:border-t-[#242C2A]" />
                     Signing in...
                   </>
                 ) : (
@@ -222,11 +222,11 @@ export default function SignInPage() {
               </button>
             </form>
 
-            <p className="mt-7 text-center text-sm text-gray-500">
+            <p className="mt-7 text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link
                 href="/sign-up"
-                className="font-bold text-[#183F38] hover:underline"
+                className="font-bold text-foreground transition hover:text-[#B58A35] hover:underline"
               >
                 Create an account
               </Link>
