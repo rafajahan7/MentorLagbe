@@ -27,11 +27,11 @@ export default function LoadingSpinner({
       }`}
     >
       <LoaderCircle
-        className={`${sizes[size]} animate-spin text-[#183F38]`}
+        className={`${sizes[size]} animate-spin text-[#183F38] dark:text-[#D9A441]`}
         strokeWidth={2}
       />
 
-      <p className="text-sm font-medium text-[#68736C]">
+      <p className="text-sm font-medium text-muted-foreground">
         {text}
       </p>
     </div>

@@ -1,11 +1,6 @@
 
 import Link from "next/link";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  ArrowUpRight,
-} from "lucide-react";
+import { Mail, MapPin, ArrowUpRight } from "lucide-react";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -23,11 +18,10 @@ const accountLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#183F38] text-white">
+    <footer className="bg-[#183F38] text-white dark:bg-[#142D29]">
       {/* Main Footer */}
       <div className="mx-auto max-w-7xl px-6 pb-14 pt-16 md:pt-20">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2">
@@ -164,8 +158,6 @@ export default function Footer() {
                   </a>
                 </div>
               </div>
-
-            
 
               <div className="flex items-start gap-3">
                 <MapPin
