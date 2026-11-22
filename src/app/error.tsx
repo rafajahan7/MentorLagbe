@@ -16,29 +16,30 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
   }, [error]);
 
   return (
-    <main className="flex min-h-[75vh] items-center justify-center bg-[#F7F4EC] px-6 py-16">
+    <main className="flex min-h-[75vh] items-center justify-center bg-background px-6 py-16 text-foreground">
       <div className="mx-auto max-w-xl text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FCE8E2]">
-          <AlertTriangle className="h-10 w-10 text-[#D77C63]" />
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FCE8E2] dark:bg-[#482B29]">
+          <AlertTriangle className="h-10 w-10 text-[#D77C63] dark:text-[#E9957E]" />
         </div>
 
         <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-[#D77C63]">
           Something went wrong
         </p>
 
-        <h1 className="mb-4 text-3xl font-bold text-[#183F38] sm:text-4xl">
+        <h1 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
           We Hit a Small Bump!
         </h1>
 
-        <p className="mb-8 text-base leading-7 text-[#68736C]">
+        <p className="mb-8 text-base leading-7 text-muted-foreground">
           An unexpected error occurred while loading this page.
           Please try again or return to the homepage.
         </p>
 
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <button
+            type="button"
             onClick={() => reset()}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183F38] px-6 py-3 font-semibold text-white transition hover:bg-[#24564B]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183F38] px-6 py-3 font-semibold text-white transition hover:bg-[#24564B] dark:bg-[#D9A441] dark:text-[#242C2A] dark:hover:bg-[#E8B94F]"
           >
             <RefreshCw className="h-4 w-4" />
             Try Again
@@ -46,7 +47,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#183F38] px-6 py-3 font-semibold text-[#183F38] transition hover:bg-[#DCE9E2]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3 font-semibold text-foreground transition hover:bg-accent hover:text-accent-foreground"
           >
             <Home className="h-4 w-4" />
             Back to Home

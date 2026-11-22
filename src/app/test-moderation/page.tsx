@@ -41,42 +41,56 @@ export default function TestModerationPage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 p-8">
-      <h1 className="text-2xl font-bold">
-        Test Admin Moderation API
-      </h1>
+    <main className="min-h-screen bg-background px-5 py-12 text-foreground">
+      <div className="mx-auto max-w-xl space-y-6 rounded-2xl border border-border bg-card p-8 shadow-sm">
+        <div>
+          <h1 className="text-2xl font-bold text-card-foreground">
+            Test Admin Moderation API
+          </h1>
 
-      <input
-        type="text"
-        placeholder="Enter pending tuition ID"
-        value={tuitionId}
-        onChange={(e) => setTuitionId(e.target.value)}
-        className="w-full rounded-lg border p-3"
-      />
+          <p className="mt-2 text-sm text-muted-foreground">
+            Enter a pending tuition ID to test the moderation actions.
+          </p>
+        </div>
 
-      <div className="flex gap-3">
-        <button
-          onClick={() => handleModeration("approve")}
+        <input
+          type="text"
+          placeholder="Enter pending tuition ID"
+          value={tuitionId}
+          onChange={(e) => setTuitionId(e.target.value)}
           disabled={loading}
-          className="rounded-lg bg-green-700 px-5 py-3 text-white disabled:opacity-50"
-        >
-          Approve
-        </button>
+          className="w-full rounded-lg border border-input bg-background p-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 dark:focus:border-[#D9A441] disabled:opacity-60"
+        />
 
-        <button
-          onClick={() => handleModeration("reject")}
-          disabled={loading}
-          className="rounded-lg bg-red-700 px-5 py-3 text-white disabled:opacity-50"
-        >
-          Reject
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => handleModeration("approve")}
+            disabled={loading}
+            className="rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? "Processing..." : "Approve"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeration("reject")}
+            disabled={loading}
+            className="rounded-lg bg-red-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? "Processing..." : "Reject"}
+          </button>
+        </div>
+
+        {message && (
+          <p
+            role="status"
+            className="break-words rounded-lg border border-border bg-muted p-4 text-sm text-foreground"
+          >
+            {message}
+          </p>
+        )}
       </div>
-
-      {message && (
-        <p className="break-words rounded-lg bg-gray-100 p-4 text-gray-900">
-          {message}
-        </p>
-      )}
-    </div>
+    </main>
   );
 }
