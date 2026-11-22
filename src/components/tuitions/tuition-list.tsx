@@ -58,7 +58,7 @@ export default function TuitionList({
   function updateFilters(values: Record<string, string>) {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Reset pagination whenever a filter changes
+    // Reset pagination whenever a filter changes.
     params.delete("page");
 
     Object.entries(values).forEach(([key, value]) => {
@@ -112,40 +112,48 @@ export default function TuitionList({
     classLevel !== "all" ||
     mode !== "all";
 
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-[#183F38] dark:text-[#F7F4EC]";
+
+  const selectClass =
+    "w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none transition focus:border-[#B58A35] dark:border-white/15 dark:bg-[#293630] dark:text-[#F7F4EC] dark:focus:border-[#D9A441]";
+
+  const paginationButtonClass =
+    "inline-flex items-center gap-1 rounded-xl border border-[#183F38]/15 bg-white px-4 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/15 dark:bg-[#293630] dark:text-[#F7F4EC] dark:hover:bg-[#35473E]";
+
   return (
     <section className="mx-auto max-w-7xl px-6 py-14">
+      {/* Section heading */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold tracking-[0.2em] text-[#B58A35]">
+          <p className="text-xs font-bold tracking-[0.2em] text-[#B58A35] dark:text-[#E5B957]">
             AVAILABLE OPPORTUNITIES
           </p>
 
-          <h2 className="mt-2 text-2xl font-bold text-[#183F38]">
+          <h2 className="mt-2 text-2xl font-bold text-[#183F38] dark:text-[#F7F4EC]">
             Explore Tuitions
           </h2>
 
-          <p className="mt-2 text-sm text-[#68736C]">
+          <p className="mt-2 text-sm text-[#68736C] dark:text-[#B7C4BC]">
             Find learning opportunities that match your needs.
           </p>
         </div>
 
-        <p className="text-sm font-semibold text-[#183F38]">
+        <p className="text-sm font-semibold text-[#183F38] dark:text-[#F7F4EC]">
           {totalTuitions} matching tuitions
         </p>
       </div>
 
-      <div className="rounded-3xl border border-[#183F38]/10 bg-white p-5 shadow-sm">
+      {/* Search and filters */}
+      <div className="rounded-3xl border border-[#183F38]/10 bg-white p-5 shadow-sm transition-colors dark:border-white/10 dark:bg-[#202B27]">
         <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <form onSubmit={handleSearch}>
-            <label
-              htmlFor="tuition-search"
-              className="mb-2 block text-sm font-semibold text-[#183F38]"
-            >
+            <label htmlFor="tuition-search" className={labelClass}>
               Search Tuitions
             </label>
 
-            <div className="flex items-center gap-3 rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4">
-              <Search size={19} className="shrink-0 text-[#B58A35]" />
+            <div className="flex items-center gap-3 rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 transition-colors dark:border-white/15 dark:bg-[#293630]">
+              <Search size={19} className="shrink-0 text-[#B58A35] dark:text-[#E5B957]" />
 
               <input
                 id="tuition-search"
@@ -153,13 +161,13 @@ export default function TuitionList({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search title or subject..."
-                className="w-full bg-transparent py-3 text-sm text-[#242C2A] outline-none placeholder:text-[#89918B]"
+                className="w-full bg-transparent py-3 text-sm text-[#242C2A] outline-none placeholder:text-[#89918B] dark:text-[#F7F4EC] dark:placeholder:text-[#9CAAA1]"
               />
 
               <button
                 type="submit"
                 aria-label="Search tuitions"
-                className="text-[#183F38] hover:text-[#B58A35]"
+                className="text-[#183F38] transition hover:text-[#B58A35] dark:text-[#F7F4EC] dark:hover:text-[#E5B957]"
               >
                 <Search size={18} />
               </button>
@@ -167,10 +175,7 @@ export default function TuitionList({
           </form>
 
           <div>
-            <label
-              htmlFor="subject-filter"
-              className="mb-2 block text-sm font-semibold text-[#183F38]"
-            >
+            <label htmlFor="subject-filter" className={labelClass}>
               Subject
             </label>
 
@@ -182,7 +187,7 @@ export default function TuitionList({
                 setSubject(value);
                 updateFilters({ subject: value });
               }}
-              className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
+              className={selectClass}
             >
               <option value="all">All Subjects</option>
 
@@ -195,10 +200,7 @@ export default function TuitionList({
           </div>
 
           <div>
-            <label
-              htmlFor="class-filter"
-              className="mb-2 block text-sm font-semibold text-[#183F38]"
-            >
+            <label htmlFor="class-filter" className={labelClass}>
               Class Level
             </label>
 
@@ -210,7 +212,7 @@ export default function TuitionList({
                 setClassLevel(value);
                 updateFilters({ classLevel: value });
               }}
-              className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
+              className={selectClass}
             >
               <option value="all">All Class Levels</option>
 
@@ -223,10 +225,7 @@ export default function TuitionList({
           </div>
 
           <div>
-            <label
-              htmlFor="mode-filter"
-              className="mb-2 block text-sm font-semibold text-[#183F38]"
-            >
+            <label htmlFor="mode-filter" className={labelClass}>
               Learning Mode
             </label>
 
@@ -238,7 +237,7 @@ export default function TuitionList({
                 setMode(value);
                 updateFilters({ mode: value });
               }}
-              className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
+              className={selectClass}
             >
               <option value="all">All Modes</option>
               <option value="Online">Online</option>
@@ -251,7 +250,7 @@ export default function TuitionList({
           <button
             type="button"
             onClick={clearFilters}
-            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#A34E37] transition hover:text-[#183F38]"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#A34E37] transition hover:text-[#183F38] dark:text-[#F09A82] dark:hover:text-[#F7F4EC]"
           >
             <X size={16} />
             Clear all filters
@@ -259,6 +258,7 @@ export default function TuitionList({
         )}
       </div>
 
+      {/* Tuition results */}
       <div className="mt-10">
         {tuitions.length > 0 ? (
           <>
@@ -271,13 +271,14 @@ export default function TuitionList({
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-12 flex flex-wrap items-center justify-center gap-2">
                 <button
                   type="button"
                   onClick={() => changePage(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="inline-flex items-center gap-1 rounded-xl border border-[#183F38]/15 bg-white px-4 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-40"
+                  className={paginationButtonClass}
                 >
                   <ChevronLeft size={17} />
                   Previous
@@ -296,8 +297,8 @@ export default function TuitionList({
                     }
                     className={`h-11 min-w-11 rounded-xl px-3 text-sm font-bold transition ${
                       currentPage === page
-                        ? "bg-[#183F38] text-white"
-                        : "border border-[#183F38]/15 bg-white text-[#183F38] hover:bg-[#DCE9E2]"
+                        ? "bg-[#183F38] text-white dark:bg-[#D9A441] dark:text-[#183F38]"
+                        : "border border-[#183F38]/15 bg-white text-[#183F38] hover:bg-[#DCE9E2] dark:border-white/15 dark:bg-[#293630] dark:text-[#F7F4EC] dark:hover:bg-[#35473E]"
                     }`}
                   >
                     {page}
@@ -308,7 +309,7 @@ export default function TuitionList({
                   type="button"
                   onClick={() => changePage(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="inline-flex items-center gap-1 rounded-xl border border-[#183F38]/15 bg-white px-4 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-40"
+                  className={paginationButtonClass}
                 >
                   Next
                   <ChevronRight size={17} />
@@ -316,13 +317,14 @@ export default function TuitionList({
               </div>
             )}
 
-            <p className="mt-4 text-center text-sm text-[#68736C]">
+            <p className="mt-4 text-center text-sm text-[#68736C] dark:text-[#B7C4BC]">
               Page {currentPage} of {totalPages || 1}
             </p>
           </>
         ) : (
-          <div className="rounded-3xl border border-dashed border-[#183F38]/20 bg-white px-6 py-20 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#DCE9E2] text-[#183F38]">
+          /* Empty state */
+          <div className="rounded-3xl border border-dashed border-[#183F38]/20 bg-white px-6 py-20 text-center transition-colors dark:border-white/20 dark:bg-[#202B27]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#DCE9E2] text-[#183F38] dark:bg-[#35473E] dark:text-[#E5B957]">
               {hasActiveFilters ? (
                 <SlidersHorizontal size={28} />
               ) : (
@@ -330,13 +332,13 @@ export default function TuitionList({
               )}
             </div>
 
-            <h3 className="mt-6 text-xl font-bold text-[#183F38]">
+            <h3 className="mt-6 text-xl font-bold text-[#183F38] dark:text-[#F7F4EC]">
               {hasActiveFilters
                 ? "No matching tuitions found"
                 : "No tuition listings yet"}
             </h3>
 
-            <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#68736C]">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#68736C] dark:text-[#B7C4BC]">
               {hasActiveFilters
                 ? "Try changing your search or filters to find more opportunities."
                 : "There are currently no approved tuition opportunities available."}
@@ -346,7 +348,7 @@ export default function TuitionList({
               <button
                 type="button"
                 onClick={clearFilters}
-                className="mt-7 rounded-full bg-[#183F38] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#28584E]"
+                className="mt-7 rounded-full bg-[#183F38] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#28584E] dark:bg-[#D9A441] dark:text-[#183F38] dark:hover:bg-[#E5B957]"
               >
                 Clear Filters
               </button>

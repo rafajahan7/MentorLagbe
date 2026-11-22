@@ -5,7 +5,7 @@ import { Mail, MapPin, ArrowUpRight } from "lucide-react";
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Browse Tuitions", href: "/tuitions" },
-  { label: "How It Works", href: "/how-it-works" },
+  { label: "How It Works", href: "/#how-it-works" },
   { label: "Why MentorLagbe", href: "/#why-mentorlagbe" },
   { label: "Pricing", href: "/pricing" },
 ];
