@@ -103,20 +103,26 @@ export default function PostTuitionForm() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none transition focus:border-[#B58A35]";
+    "w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#B58A35] focus:ring-2 focus:ring-[#B58A35]/20";
 
   const labelClass =
-    "mb-2 block text-sm font-semibold text-[#183F38]";
+    "mb-2 block text-sm font-semibold text-foreground";
+
+  const sectionClass =
+    "rounded-3xl border border-border bg-card p-6 md:p-8";
+
+  const headingClass =
+    "text-xl font-bold text-card-foreground";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Basic Information */}
-      <section className="rounded-3xl border border-[#183F38]/10 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-bold text-[#183F38]">
+      <section className={sectionClass}>
+        <h2 className={headingClass}>
           Tuition Information
         </h2>
 
-        <p className="mt-2 text-sm text-[#68736C]">
+        <p className="mt-2 text-sm text-muted-foreground">
           Tell students about the learning opportunity you are offering.
         </p>
 
@@ -146,9 +152,13 @@ export default function PostTuitionForm() {
               defaultValue=""
               className={inputClass}
             >
-              <option value="" disabled>Select subject</option>
+              <option value="" disabled>
+                Select subject
+              </option>
               {subjects.map((item) => (
-                <option key={item} value={item}>{item}</option>
+                <option key={item} value={item}>
+                  {item}
+                </option>
               ))}
             </select>
           </div>
@@ -164,9 +174,13 @@ export default function PostTuitionForm() {
               defaultValue=""
               className={inputClass}
             >
-              <option value="" disabled>Select class level</option>
+              <option value="" disabled>
+                Select class level
+              </option>
               {classLevels.map((item) => (
-                <option key={item} value={item}>{item}</option>
+                <option key={item} value={item}>
+                  {item}
+                </option>
               ))}
             </select>
           </div>
@@ -182,7 +196,9 @@ export default function PostTuitionForm() {
               defaultValue=""
               className={inputClass}
             >
-              <option value="" disabled>Select learning mode</option>
+              <option value="" disabled>
+                Select learning mode
+              </option>
               <option value="Online">Online</option>
               <option value="Offline">Offline</option>
             </select>
@@ -203,8 +219,8 @@ export default function PostTuitionForm() {
       </section>
 
       {/* Schedule and Fee */}
-      <section className="rounded-3xl border border-[#183F38]/10 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-bold text-[#183F38]">
+      <section className={sectionClass}>
+        <h2 className={headingClass}>
           Schedule & Compensation
         </h2>
 
@@ -235,7 +251,9 @@ export default function PostTuitionForm() {
               defaultValue=""
               className={inputClass}
             >
-              <option value="" disabled>Select days</option>
+              <option value="" disabled>
+                Select days
+              </option>
               {[1, 2, 3, 4, 5, 6, 7].map((day) => (
                 <option key={day} value={day}>
                   {day} {day === 1 ? "day" : "days"} per week
@@ -247,8 +265,8 @@ export default function PostTuitionForm() {
       </section>
 
       {/* Description and Image */}
-      <section className="rounded-3xl border border-[#183F38]/10 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-bold text-[#183F38]">
+      <section className={sectionClass}>
+        <h2 className={headingClass}>
           Description & Banner
         </h2>
 
@@ -280,7 +298,7 @@ export default function PostTuitionForm() {
       {error && (
         <div
           role="alert"
-          className="rounded-xl bg-red-50 p-4 text-sm text-red-700"
+          className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
         >
           {error}
         </div>
@@ -289,7 +307,7 @@ export default function PostTuitionForm() {
       {message && (
         <div
           role="status"
-          className="rounded-xl bg-[#DCE9E2] p-4 text-sm font-medium text-[#183F38]"
+          className="rounded-xl border border-emerald-200 bg-[#DCE9E2] p-4 text-sm font-medium text-[#183F38] dark:border-emerald-900 dark:bg-[#29443D] dark:text-[#DCE9E2]"
         >
           {message}
           <p className="mt-1 text-xs">
@@ -317,7 +335,7 @@ export default function PostTuitionForm() {
         )}
       </button>
 
-      <p className="text-center text-xs leading-6 text-[#68736C]">
+      <p className="text-center text-xs leading-6 text-muted-foreground">
         Your tuition will become publicly visible only after admin approval.
       </p>
     </form>
