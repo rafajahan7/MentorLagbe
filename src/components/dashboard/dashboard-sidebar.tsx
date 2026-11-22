@@ -77,17 +77,24 @@ export default function DashboardSidebar({
   }
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-[#183F38]/10 p-4">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border"
+    >
+      <SidebarHeader className="border-b border-sidebar-border p-4">
         <button
+          type="button"
           onClick={() => router.push("/")}
           className="flex items-center gap-3 text-left"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#183F38]">
             <GraduationCap className="text-white" size={23} />
           </div>
+
           <div className="group-data-[collapsible=icon]:hidden">
-            <p className="text-lg font-bold text-[#183F38]">MentorLagbe</p>
+            <p className="text-lg font-bold text-sidebar-foreground">
+              MentorLagbe
+            </p>
             <p className="text-[10px] tracking-widest text-[#B58A35]">
               THE LEARNING EXCHANGE
             </p>
@@ -97,7 +104,7 @@ export default function DashboardSidebar({
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[#89928C]">
+          <SidebarGroupLabel className="text-muted-foreground">
             {roleLabels[role]} Dashboard
           </SidebarGroupLabel>
 
@@ -116,7 +123,7 @@ export default function DashboardSidebar({
                       isActive={isActive}
                       tooltip={item.title}
                       onClick={() => navigate(item.url)}
-                      className="h-10 text-[#68736C] hover:bg-[#DCE9E2] hover:text-[#183F38] data-[active=true]:bg-[#183F38] data-[active=true]:text-white"
+                      className="h-10 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
                     >
                       <Icon size={19} />
                       <span>{item.title}</span>
@@ -129,7 +136,7 @@ export default function DashboardSidebar({
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[#89928C]">
+          <SidebarGroupLabel className="text-muted-foreground">
             Account
           </SidebarGroupLabel>
 
@@ -140,7 +147,7 @@ export default function DashboardSidebar({
                   isActive={pathname === "/dashboard/profile"}
                   tooltip="Update Profile"
                   onClick={() => navigate("/dashboard/profile")}
-                  className="h-10 text-[#68736C] hover:bg-[#DCE9E2] hover:text-[#183F38] data-[active=true]:bg-[#183F38] data-[active=true]:text-white"
+                  className="h-10 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
                 >
                   <UserRound size={19} />
                   <span>Update Profile</span>
@@ -151,7 +158,7 @@ export default function DashboardSidebar({
                 <SidebarMenuButton
                   tooltip="Home"
                   onClick={() => navigate("/")}
-                  className="h-10 text-[#68736C] hover:bg-[#DCE9E2] hover:text-[#183F38]"
+                  className="h-10 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 >
                   <Settings size={19} />
                   <span>Back to Website</span>
@@ -162,9 +169,9 @@ export default function DashboardSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-[#183F38]/10 p-3">
+      <SidebarFooter className="border-t border-sidebar-border p-3">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#DCE9E2]">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sidebar-accent">
             {image ? (
               <img
                 src={image}
@@ -172,15 +179,20 @@ export default function DashboardSidebar({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <UserRound size={19} className="text-[#183F38]" />
+              <UserRound
+                size={19}
+                className="text-sidebar-foreground"
+              />
             )}
           </div>
 
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-semibold text-[#183F38]">
+            <p className="truncate text-sm font-semibold text-sidebar-foreground">
               {name}
             </p>
-            <p className="truncate text-xs text-[#89928C]">{email}</p>
+            <p className="truncate text-xs text-muted-foreground">
+              {email}
+            </p>
           </div>
         </div>
       </SidebarFooter>

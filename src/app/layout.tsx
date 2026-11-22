@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/navbar";
 import Footer from "@/components/shared/footer";
+import ThemeProvider from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -32,24 +33,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#F7F4EC] antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}
       >
-        <Navbar />
+        <ThemeProvider>
+          <Navbar />
 
-        <main className="min-h-[calc(100vh-82px)]">
-          {children}
-        </main>
+          <main className="min-h-[calc(100vh-82px)]">
+            {children}
+          </main>
 
-        <Footer />
+          <Footer />
 
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-          duration={3000}
-        />
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            duration={3000}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );

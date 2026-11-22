@@ -57,19 +57,18 @@ export default async function DashboardLayout({
         image={profile.image}
       />
 
-      <SidebarInset className="min-w-0 bg-[#F7F4EC]">
-        {/* Dashboard Topbar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#183F38]/10 bg-white px-4 md:px-8">
+      <SidebarInset className="min-w-0 bg-background">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background px-4 md:px-8">
           <div className="flex items-center gap-4">
-            <SidebarTrigger className="text-[#183F38]" />
+            <SidebarTrigger className="text-foreground" />
 
-            <div className="hidden h-6 w-px bg-[#183F38]/10 sm:block" />
+            <div className="hidden h-6 w-px bg-border sm:block" />
 
             <div>
-              <p className="text-sm font-bold text-[#183F38]">
+              <p className="text-sm font-bold text-foreground">
                 MentorLagbe Dashboard
               </p>
-              <p className="text-xs text-[#89928C]">
+              <p className="text-xs text-muted-foreground">
                 Manage your learning journey
               </p>
             </div>
@@ -77,9 +76,9 @@ export default async function DashboardLayout({
 
           <Link
             href="/dashboard/profile"
-            className="flex items-center gap-3 rounded-xl px-2 py-1.5 transition hover:bg-[#DCE9E2]"
+            className="flex items-center gap-3 rounded-xl px-2 py-1.5 transition hover:bg-accent"
           >
-            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#DCE9E2]">
+            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-muted">
               {profile.image ? (
                 <img
                   src={profile.image}
@@ -87,23 +86,22 @@ export default async function DashboardLayout({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <UserRound size={19} className="text-[#183F38]" />
+                <UserRound size={19} className="text-foreground" />
               )}
             </div>
 
             <div className="hidden text-left sm:block">
-              <p className="max-w-36 truncate text-sm font-semibold text-[#183F38]">
+              <p className="max-w-36 truncate text-sm font-semibold text-foreground">
                 {profile.name}
               </p>
-              <p className="text-xs text-[#89928C]">
+              <p className="text-xs text-muted-foreground">
                 {roleLabels[role as keyof typeof roleLabels]}
               </p>
             </div>
           </Link>
         </header>
 
-        {/* Current Dashboard Page */}
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 bg-background text-foreground">
           {children}
         </div>
       </SidebarInset>

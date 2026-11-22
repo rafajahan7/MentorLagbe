@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 
 import { authClient } from "@/lib/auth-client";
+import ThemeToggle from "@/components/shared/theme-toggle";
 
 type UserRole = "student" | "tutor" | "admin";
 
@@ -93,8 +94,6 @@ export default function Navbar() {
         description: "See you again at MentorLagbe!",
       });
 
-      // Force a fresh page load so the Navbar gets the
-      // updated authentication state from the server.
       window.location.replace("/");
     } catch (error) {
       console.error("Sign out failed:", error);
@@ -105,7 +104,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#183F38]/10 bg-[#F7F4EC]">
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="mx-auto flex min-h-[82px] max-w-7xl items-center justify-between px-5 md:px-8">
 
         {/* Logo */}
@@ -119,10 +118,10 @@ export default function Navbar() {
           </div>
 
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-[#183F38]">
+            <h1 className="text-xl font-extrabold tracking-tight text-foreground">
               MentorLagbe
             </h1>
-            <p className="text-[9px] font-semibold tracking-[2px] text-[#9A7B3F]">
+            <p className="text-[9px] font-semibold tracking-[2px] text-[#B58A35]">
               LEARN. GROW. CONNECT.
             </p>
           </div>
@@ -137,7 +136,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[13px] font-semibold text-[#46534C] transition-colors hover:text-[#B58A35]"
+              className="text-[13px] font-semibold text-muted-foreground transition-colors hover:text-primary"
             >
               {link.name}
             </Link>
@@ -146,13 +145,15 @@ export default function Navbar() {
 
         {/* Desktop User Actions */}
         <div className="hidden items-center gap-4 lg:flex">
+          <ThemeToggle />
+
           {isPending ? (
-            <div className="h-10 w-24 animate-pulse rounded-full bg-[#DCE9E2]" />
+            <div className="h-10 w-24 animate-pulse rounded-full bg-muted" />
           ) : user ? (
             <>
               <Link
                 href={dashboardLink}
-                className="flex items-center gap-2 text-sm font-semibold text-[#183F38] transition hover:text-[#B58A35]"
+                className="flex items-center gap-2 text-sm font-semibold text-foreground transition hover:text-primary"
               >
                 <LayoutDashboard size={17} />
                 Dashboard
@@ -160,7 +161,7 @@ export default function Navbar() {
 
               <Link
                 href={profileLink}
-                className="flex items-center gap-2.5 rounded-full border border-[#183F38]/10 px-3 py-2 transition hover:bg-[#DCE9E2]"
+                className="flex items-center gap-2.5 rounded-full border border-border px-3 py-2 transition hover:bg-accent"
                 aria-label="Update your profile"
               >
                 {user.image ? (
@@ -176,7 +177,7 @@ export default function Navbar() {
                 )}
 
                 <div className="flex flex-col items-start">
-                  <span className="max-w-[110px] truncate text-sm font-bold text-[#183F38]">
+                  <span className="max-w-[110px] truncate text-sm font-bold text-foreground">
                     {user.name || "User"}
                   </span>
 
@@ -194,7 +195,7 @@ export default function Navbar() {
                 type="button"
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="rounded-full border border-[#183F38]/25 px-4 py-2 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {signingOut ? "Signing out..." : "Sign Out"}
               </button>
@@ -203,7 +204,7 @@ export default function Navbar() {
             <>
               <Link
                 href="/sign-in"
-                className="text-sm font-semibold text-[#183F38] transition hover:text-[#B58A35]"
+                className="text-sm font-semibold text-foreground transition hover:text-primary"
               >
                 Sign In
               </Link>
@@ -218,24 +219,28 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((previous) => !previous)}
-          className="rounded-lg p-2 text-[#183F38] transition hover:bg-[#DCE9E2] lg:hidden"
-          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-        >
-          {menuOpen ? <X size={25} /> : <Menu size={25} />}
-        </button>
+        {/* Mobile Actions */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((previous) => !previous)}
+            className="rounded-lg p-2 text-foreground transition hover:bg-accent"
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {menuOpen ? <X size={25} /> : <Menu size={25} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
       {menuOpen && (
         <div
           id="mobile-navigation"
-          className="border-t border-[#183F38]/10 bg-[#F7F4EC] px-5 py-5 lg:hidden"
+          className="border-t border-border bg-background px-5 py-5 lg:hidden"
         >
           <nav
             className="flex flex-col gap-4"
@@ -246,17 +251,17 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-[#354B42] transition hover:text-[#B58A35]"
+                className="text-sm font-semibold text-foreground transition hover:text-primary"
               >
                 {link.name}
               </Link>
             ))}
           </nav>
 
-          <div className="my-5 border-t border-[#183F38]/10" />
+          <div className="my-5 border-t border-border" />
 
           {isPending ? (
-            <div className="h-10 animate-pulse rounded-lg bg-[#DCE9E2]" />
+            <div className="h-10 animate-pulse rounded-lg bg-muted" />
           ) : user ? (
             <div className="flex flex-col gap-4">
 
@@ -279,7 +284,7 @@ export default function Navbar() {
                 )}
 
                 <div>
-                  <p className="font-bold text-[#183F38]">
+                  <p className="font-bold text-foreground">
                     {user.name || "User"}
                   </p>
 
@@ -296,7 +301,7 @@ export default function Navbar() {
               <Link
                 href={dashboardLink}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-sm font-semibold text-[#183F38]"
+                className="flex items-center gap-2 text-sm font-semibold text-foreground"
               >
                 <LayoutDashboard size={17} />
                 Dashboard
@@ -305,7 +310,7 @@ export default function Navbar() {
               <Link
                 href={profileLink}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-sm font-semibold text-[#183F38]"
+                className="flex items-center gap-2 text-sm font-semibold text-foreground"
               >
                 <UserRound size={17} />
                 Update Profile
@@ -326,7 +331,7 @@ export default function Navbar() {
               <Link
                 href="/sign-in"
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-[#183F38]"
+                className="text-sm font-semibold text-foreground"
               >
                 Sign In
               </Link>
