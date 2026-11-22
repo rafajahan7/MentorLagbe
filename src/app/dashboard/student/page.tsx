@@ -32,12 +32,10 @@ export default async function StudentDashboardPage() {
 
   const result = await getStudentDashboardStats();
 
-  const stats = result.success
-    ? result.stats
-    : null;
+  const stats = result.success ? result.stats : null;
 
   return (
-    <main className="min-h-screen bg-[#F7F4EC] px-5 py-10 md:px-8">
+    <main className="min-h-screen bg-background px-5 py-10 text-foreground md:px-8">
       <div className="mx-auto max-w-7xl">
 
         {/* Welcome section */}
@@ -46,11 +44,11 @@ export default async function StudentDashboardPage() {
             STUDENT DASHBOARD
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold text-[#183F38] md:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold text-foreground md:text-4xl">
             Welcome back, {session.user.name}!
           </h1>
 
-          <p className="mt-3 text-[#68736C]">
+          <p className="mt-3 text-muted-foreground">
             Keep track of your tuition applications and learning opportunities.
           </p>
         </div>

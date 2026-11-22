@@ -14,29 +14,29 @@ export default function StatsCard({
   value,
   description,
   icon: Icon,
-  iconBackground = "bg-[#DCE9E2]",
+  iconBackground = "bg-muted",
 }: StatsCardProps) {
   return (
-    <div className="rounded-2xl border border-[#183F38]/10 bg-white p-6 transition hover:-translate-y-1 hover:shadow-md">
-      <div className="flex items-start justify-between">
+    <div className="rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-[#68736C]">
+          <p className="text-sm font-medium text-muted-foreground">
             {title}
           </p>
 
-          <h3 className="mt-3 text-3xl font-bold text-[#183F38]">
+          <h3 className="mt-3 text-3xl font-bold text-card-foreground">
             {value}
           </h3>
         </div>
 
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBackground}`}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconBackground}`}
         >
-          <Icon size={23} className="text-[#183F38]" />
+          <Icon size={23} className="text-foreground" />
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-[#89928C]">
+      <p className="mt-4 text-xs text-muted-foreground">
         {description}
       </p>
     </div>
