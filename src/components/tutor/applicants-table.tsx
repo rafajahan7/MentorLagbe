@@ -37,9 +37,12 @@ interface ApplicantsTableProps {
 }
 
 const statusStyles = {
-  pending: "bg-amber-100 text-amber-800",
-  accepted: "bg-emerald-100 text-emerald-800",
-  rejected: "bg-red-100 text-red-800",
+  pending:
+    "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300",
+  accepted:
+    "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300",
+  rejected:
+    "bg-red-100 text-red-800 dark:bg-red-950/50 dark:text-red-300",
 };
 
 export default function ApplicantsTable({
@@ -111,50 +114,59 @@ export default function ApplicantsTable({
     <div>
       {/* Statistics */}
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Pending Applications</p>
-          <p className="mt-2 text-2xl font-bold text-amber-700">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">
+            Pending Applications
+          </p>
+          <p className="mt-2 text-2xl font-bold text-amber-700 dark:text-amber-400">
             {pendingCount}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Accepted Applications</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-700">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">
+            Accepted Applications
+          </p>
+          <p className="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-400">
             {acceptedCount}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Rejected Applications</p>
-          <p className="mt-2 text-2xl font-bold text-red-600">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">
+            Rejected Applications
+          </p>
+          <p className="mt-2 text-2xl font-bold text-red-600 dark:text-red-400">
             {rejectedCount}
           </p>
         </div>
       </div>
 
       {message && (
-        <div className="mb-5 rounded-xl border border-[#183F38]/10 bg-white px-5 py-3 text-sm text-[#183F38]">
+        <div className="mb-5 rounded-xl border border-border bg-card px-5 py-3 text-sm text-card-foreground">
           {message}
         </div>
       )}
 
       {/* Applications */}
       {applications.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-[#183F38]/20 bg-white px-6 py-16 text-center">
-          <Users size={44} className="mx-auto text-[#B58A35]" />
+        <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
+          <Users
+            size={44}
+            className="mx-auto text-[#B58A35]"
+          />
 
-          <h2 className="mt-4 text-xl font-bold text-[#183F38]">
+          <h2 className="mt-4 text-xl font-bold text-card-foreground">
             No applicants yet
           </h2>
 
-          <p className="mt-2 text-sm text-[#68736C]">
+          <p className="mt-2 text-sm text-muted-foreground">
             Student applications for your tuition posts will appear here.
           </p>
 
           <Link
             href="/dashboard/tutor/my-tuitions"
-            className="mt-6 inline-flex rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white hover:bg-[#24564B]"
+            className="mt-6 inline-flex rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#24564B]"
           >
             View My Tuitions
           </Link>
@@ -164,21 +176,21 @@ export default function ApplicantsTable({
           {applications.map((application) => (
             <article
               key={application._id}
-              className="rounded-2xl border border-[#183F38]/10 bg-white p-5 shadow-sm md:p-7"
+              className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-colors md:p-7"
             >
               {/* Header */}
-              <div className="flex flex-col justify-between gap-4 border-b border-[#183F38]/10 pb-5 sm:flex-row sm:items-start">
+              <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-start">
                 <div>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38]">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38] dark:bg-[#29443D] dark:text-[#DCE9E2]">
                     <BookOpen size={13} />
                     {application.tuitionTitle}
                   </span>
 
-                  <h2 className="mt-3 text-xl font-bold text-[#183F38]">
+                  <h2 className="mt-3 text-xl font-bold text-card-foreground">
                     {application.studentName}
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#68736C]">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Applied{" "}
                     {application.appliedAt
                       ? new Date(application.appliedAt).toLocaleDateString(
@@ -203,24 +215,30 @@ export default function ApplicantsTable({
               {/* Applicant Information */}
               <div className="mt-5 grid gap-5 md:grid-cols-2">
                 <div className="flex items-start gap-3">
-                  <Mail size={18} className="mt-1 shrink-0 text-[#B58A35]" />
+                  <Mail
+                    size={18}
+                    className="mt-1 shrink-0 text-[#B58A35]"
+                  />
                   <div>
-                    <p className="text-xs font-medium text-[#89928C]">
+                    <p className="text-xs font-medium text-muted-foreground">
                       Email Address
                     </p>
-                    <p className="mt-1 break-all text-sm font-medium text-[#183F38]">
+                    <p className="mt-1 break-all text-sm font-medium text-card-foreground">
                       {application.studentEmail}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Phone size={18} className="mt-1 shrink-0 text-[#B58A35]" />
+                  <Phone
+                    size={18}
+                    className="mt-1 shrink-0 text-[#B58A35]"
+                  />
                   <div>
-                    <p className="text-xs font-medium text-[#89928C]">
+                    <p className="text-xs font-medium text-muted-foreground">
                       Phone Number
                     </p>
-                    <p className="mt-1 text-sm font-medium text-[#183F38]">
+                    <p className="mt-1 text-sm font-medium text-card-foreground">
                       {application.studentPhone}
                     </p>
                   </div>
@@ -232,22 +250,25 @@ export default function ApplicantsTable({
                     className="mt-1 shrink-0 text-[#B58A35]"
                   />
                   <div>
-                    <p className="text-xs font-medium text-[#89928C]">
+                    <p className="text-xs font-medium text-muted-foreground">
                       Preferred Schedule
                     </p>
-                    <p className="mt-1 text-sm font-medium text-[#183F38]">
+                    <p className="mt-1 text-sm font-medium text-card-foreground">
                       {application.preferredSchedule}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Clock size={18} className="mt-1 shrink-0 text-[#B58A35]" />
+                  <Clock
+                    size={18}
+                    className="mt-1 shrink-0 text-[#B58A35]"
+                  />
                   <div>
-                    <p className="text-xs font-medium text-[#89928C]">
+                    <p className="text-xs font-medium text-muted-foreground">
                       Monthly Tuition Fee
                     </p>
-                    <p className="mt-1 text-sm font-bold text-[#183F38]">
+                    <p className="mt-1 text-sm font-bold text-card-foreground">
                       ৳{application.monthlyFee.toLocaleString("en-BD")}
                     </p>
                   </div>
@@ -255,29 +276,32 @@ export default function ApplicantsTable({
               </div>
 
               {/* Student Note */}
-              <div className="mt-6 rounded-xl bg-[#F7F4EC] p-4">
+              <div className="mt-6 rounded-xl bg-muted p-4">
                 <div className="flex items-center gap-2">
-                  <MessageSquare size={17} className="text-[#B58A35]" />
-                  <p className="text-sm font-semibold text-[#183F38]">
+                  <MessageSquare
+                    size={17}
+                    className="text-[#B58A35]"
+                  />
+                  <p className="text-sm font-semibold text-card-foreground">
                     Student Note
                   </p>
                 </div>
 
-                <p className="mt-2 text-sm leading-6 text-[#68736C]">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   {application.studentNote || "No additional note provided."}
                 </p>
               </div>
 
               {/* Actions */}
               {application.status === "pending" && (
-                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-[#183F38]/10 pt-5">
+                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-border pt-5">
                   <button
                     type="button"
                     onClick={() =>
                       handleStatusUpdate(application._id, "rejected")
                     }
                     disabled={loadingId !== null}
-                    className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40"
                   >
                     <XCircle size={17} />
                     {loadingId === application._id
@@ -291,7 +315,7 @@ export default function ApplicantsTable({
                       handleStatusUpdate(application._id, "accepted")
                     }
                     disabled={loadingId !== null}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#183F38] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#24564B] disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#183F38] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#24564B] disabled:opacity-50"
                   >
                     <CheckCircle size={17} />
                     {loadingId === application._id

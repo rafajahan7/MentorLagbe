@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 
 export default function PostTuitionPage() {
   return (
-    <main className="min-h-screen bg-[#F7F4EC] px-5 py-12 md:px-8">
+    <main className="min-h-screen bg-background px-5 py-12 text-foreground md:px-8">
       <div className="mx-auto max-w-4xl">
         <Link
           href="/dashboard/tutor"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#183F38] hover:text-[#B58A35]"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-[#B58A35]"
         >
           <ArrowLeft size={17} />
           Back to Dashboard
@@ -31,11 +31,11 @@ export default function PostTuitionPage() {
             GROW YOUR TEACHING JOURNEY
           </p>
 
-          <h1 className="mt-3 text-3xl font-bold text-[#183F38] md:text-4xl">
+          <h1 className="mt-3 text-3xl font-bold text-foreground md:text-4xl">
             Post a Tuition
           </h1>
 
-          <p className="mt-3 max-w-2xl leading-7 text-[#68736C]">
+          <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
             Share your teaching opportunity and connect with students
             looking for the right tutor.
           </p>

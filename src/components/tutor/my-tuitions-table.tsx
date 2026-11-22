@@ -42,10 +42,18 @@ interface MyTuitionsTableProps {
 }
 
 const statusStyles = {
-  pending: "bg-amber-100 text-amber-800",
-  approved: "bg-emerald-100 text-emerald-800",
-  rejected: "bg-red-100 text-red-800",
+  pending:
+    "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400",
+  approved:
+    "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400",
+  rejected:
+    "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-400",
 };
+
+const inputStyles =
+  "w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#183F38] focus:ring-2 focus:ring-[#183F38]/10 dark:focus:border-[#D9A441]";
+
+const labelStyles = "mb-2 block text-sm font-semibold text-foreground";
 
 export default function MyTuitionsTable({
   tuitions: initialTuitions,
@@ -276,31 +284,32 @@ export default function MyTuitionsTable({
 
   return (
     <div>
-      {message && (
-        <div className="mb-5 rounded-xl border border-[#183F38]/10 bg-white px-5 py-3 text-sm text-[#183F38]">
+      {/* Feedback */}
+      {message && !editingTuition && (
+        <div className="mb-5 rounded-xl border border-border bg-card px-5 py-3 text-sm text-foreground">
           {message}
         </div>
       )}
 
       {/* Summary */}
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Total Posts</p>
-          <p className="mt-2 text-2xl font-bold text-[#183F38]">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">Total Posts</p>
+          <p className="mt-2 text-2xl font-bold text-card-foreground">
             {tuitions.length}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Approved</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-700">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">Approved</p>
+          <p className="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-400">
             {tuitions.filter((item) => item.approvalStatus === "approved").length}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-[#183F38]/10 bg-white p-5">
-          <p className="text-sm text-[#68736C]">Pending Review</p>
-          <p className="mt-2 text-2xl font-bold text-amber-700">
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <p className="text-sm text-muted-foreground">Pending Review</p>
+          <p className="mt-2 text-2xl font-bold text-amber-700 dark:text-amber-400">
             {tuitions.filter((item) => item.approvalStatus === "pending").length}
           </p>
         </div>
@@ -308,20 +317,20 @@ export default function MyTuitionsTable({
 
       {/* Tuition List */}
       {tuitions.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-[#183F38]/20 bg-white px-6 py-16 text-center">
+        <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
           <BookOpen size={42} className="mx-auto text-[#B58A35]" />
 
-          <h2 className="mt-4 text-xl font-bold text-[#183F38]">
+          <h2 className="mt-4 text-xl font-bold text-card-foreground">
             No tuition posts yet
           </h2>
 
-          <p className="mt-2 text-sm text-[#68736C]">
+          <p className="mt-2 text-sm text-muted-foreground">
             Create your first tuition opportunity to get started.
           </p>
 
           <Link
             href="/dashboard/tutor/post-tuition"
-            className="mt-6 inline-flex rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white hover:bg-[#24564B]"
+            className="mt-6 inline-flex rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#24564B]"
           >
             Post a Tuition
           </Link>
@@ -331,11 +340,11 @@ export default function MyTuitionsTable({
           {tuitions.map((tuition) => (
             <div
               key={tuition._id}
-              className="overflow-hidden rounded-2xl border border-[#183F38]/10 bg-white p-5 shadow-sm md:p-6"
+              className="overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm md:p-6"
             >
               <div className="flex flex-col gap-5 lg:flex-row">
                 {/* Banner */}
-                <div className="h-44 w-full shrink-0 overflow-hidden rounded-xl bg-[#DCE9E2] sm:h-40 lg:w-56">
+                <div className="h-44 w-full shrink-0 overflow-hidden rounded-xl bg-[#DCE9E2] dark:bg-[#29483D] sm:h-40 lg:w-56">
                   {tuition.bannerImage ? (
                     <img
                       src={tuition.bannerImage}
@@ -344,7 +353,7 @@ export default function MyTuitionsTable({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <BookOpen size={42} className="text-[#183F38]/40" />
+                      <BookOpen size={42} className="text-[#183F38]/40 dark:text-[#DCE9E2]/50" />
                     </div>
                   )}
                 </div>
@@ -352,7 +361,7 @@ export default function MyTuitionsTable({
                 {/* Details */}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38]">
+                    <span className="rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38] dark:bg-[#29483D] dark:text-[#B9DDC9]">
                       {tuition.subject}
                     </span>
 
@@ -365,19 +374,19 @@ export default function MyTuitionsTable({
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
                         tuition.isActive
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-gray-100 text-gray-700"
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {tuition.isActive ? "Active" : "Closed"}
                     </span>
                   </div>
 
-                  <h2 className="mt-3 text-xl font-bold text-[#183F38]">
+                  <h2 className="mt-3 text-xl font-bold text-card-foreground">
                     {tuition.title}
                   </h2>
 
-                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#68736C]">
+                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                     <span>{tuition.classLevel}</span>
                     <span>{tuition.mode}</span>
                     <span className="flex items-center gap-1">
@@ -387,14 +396,14 @@ export default function MyTuitionsTable({
                     <span>{tuition.daysPerWeek} days/week</span>
                   </div>
 
-                  <p className="mt-3 text-lg font-bold text-[#183F38]">
+                  <p className="mt-3 text-lg font-bold text-card-foreground">
                     ৳{tuition.monthlyFee.toLocaleString("en-BD")}
-                    <span className="text-sm font-normal text-[#68736C]">
+                    <span className="text-sm font-normal text-muted-foreground">
                       {" "} / month
                     </span>
                   </p>
 
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#68736C]">
+                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
                     {tuition.description}
                   </p>
 
@@ -404,7 +413,7 @@ export default function MyTuitionsTable({
                       type="button"
                       onClick={() => openEditModal(tuition)}
                       disabled={loading}
-                      className="inline-flex items-center gap-2 rounded-lg border border-[#183F38]/15 px-4 py-2 text-sm font-semibold text-[#183F38] hover:bg-[#DCE9E2] disabled:opacity-50"
+                      className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-accent disabled:opacity-50"
                     >
                       <Pencil size={15} />
                       Edit
@@ -414,7 +423,7 @@ export default function MyTuitionsTable({
                       type="button"
                       onClick={() => handleToggle(tuition)}
                       disabled={loading}
-                      className="inline-flex items-center gap-2 rounded-lg border border-[#183F38]/15 px-4 py-2 text-sm font-semibold text-[#183F38] hover:bg-[#DCE9E2] disabled:opacity-50"
+                      className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-accent disabled:opacity-50"
                     >
                       {tuition.isActive ? (
                         <>
@@ -433,7 +442,7 @@ export default function MyTuitionsTable({
                       type="button"
                       onClick={() => handleDelete(tuition._id)}
                       disabled={loading}
-                      className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40"
                     >
                       <Trash2 size={15} />
                       Delete
@@ -448,14 +457,14 @@ export default function MyTuitionsTable({
 
       {/* Edit Modal */}
       {editingTuition && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
-          <div className="my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-xl md:p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 p-4">
+          <div className="my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-border bg-card p-6 text-card-foreground shadow-xl md:p-8">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-[#183F38]">
+                <h2 className="text-2xl font-bold text-card-foreground">
                   Edit Tuition
                 </h2>
-                <p className="mt-1 text-sm text-[#68736C]">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Update your tuition information.
                 </p>
               </div>
@@ -464,7 +473,7 @@ export default function MyTuitionsTable({
                 type="button"
                 onClick={closeEditModal}
                 disabled={loading}
-                className="rounded-full p-2 text-[#68736C] hover:bg-[#F7F4EC]"
+                className="rounded-full p-2 text-muted-foreground transition hover:bg-accent hover:text-foreground"
                 aria-label="Close edit form"
               >
                 <X size={22} />
@@ -473,52 +482,44 @@ export default function MyTuitionsTable({
 
             <form onSubmit={handleUpdate} className="space-y-5">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                  Tuition Title
-                </label>
+                <label className={labelStyles}>Tuition Title</label>
                 <input
                   required
                   value={form.title}
                   onChange={(e) =>
                     setForm({ ...form, title: e.target.value })
                   }
-                  className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                  className={inputStyles}
                 />
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Subject
-                  </label>
+                  <label className={labelStyles}>Subject</label>
                   <input
                     required
                     value={form.subject}
                     onChange={(e) =>
                       setForm({ ...form, subject: e.target.value })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Class Level
-                  </label>
+                  <label className={labelStyles}>Class Level</label>
                   <input
                     required
                     value={form.classLevel}
                     onChange={(e) =>
                       setForm({ ...form, classLevel: e.target.value })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Mode
-                  </label>
+                  <label className={labelStyles}>Mode</label>
                   <select
                     value={form.mode}
                     onChange={(e) =>
@@ -527,7 +528,7 @@ export default function MyTuitionsTable({
                         mode: e.target.value as "Online" | "Offline",
                       })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   >
                     <option value="Online">Online</option>
                     <option value="Offline">Offline</option>
@@ -535,23 +536,19 @@ export default function MyTuitionsTable({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Location
-                  </label>
+                  <label className={labelStyles}>Location</label>
                   <input
                     required
                     value={form.location}
                     onChange={(e) =>
                       setForm({ ...form, location: e.target.value })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Monthly Fee (৳)
-                  </label>
+                  <label className={labelStyles}>Monthly Fee (৳)</label>
                   <input
                     required
                     type="number"
@@ -560,20 +557,18 @@ export default function MyTuitionsTable({
                     onChange={(e) =>
                       setForm({ ...form, monthlyFee: e.target.value })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                    Days per Week
-                  </label>
+                  <label className={labelStyles}>Days per Week</label>
                   <select
                     value={form.daysPerWeek}
                     onChange={(e) =>
                       setForm({ ...form, daysPerWeek: e.target.value })
                     }
-                    className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                    className={inputStyles}
                   >
                     {[1, 2, 3, 4, 5, 6, 7].map((day) => (
                       <option key={day} value={day}>
@@ -585,9 +580,7 @@ export default function MyTuitionsTable({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                  Description
-                </label>
+                <label className={labelStyles}>Description</label>
                 <textarea
                   required
                   rows={4}
@@ -595,14 +588,12 @@ export default function MyTuitionsTable({
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
-                  className="w-full rounded-xl border border-[#183F38]/15 px-4 py-3 text-sm outline-none focus:border-[#183F38]"
+                  className={inputStyles}
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#183F38]">
-                  Banner Image
-                </label>
+                <label className={labelStyles}>Banner Image</label>
                 <ImageUpload
                   value={form.bannerImage}
                   onChange={(value) =>
@@ -611,18 +602,18 @@ export default function MyTuitionsTable({
                 />
               </div>
 
-              {message && editingTuition && (
-                <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              {message && (
+                <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
                   {message}
                 </p>
               )}
 
-              <div className="flex flex-wrap justify-end gap-3 border-t border-[#183F38]/10 pt-5">
+              <div className="flex flex-wrap justify-end gap-3 border-t border-border pt-5">
                 <button
                   type="button"
                   onClick={closeEditModal}
                   disabled={loading}
-                  className="rounded-xl border border-[#183F38]/15 px-5 py-3 text-sm font-semibold text-[#183F38]"
+                  className="rounded-xl border border-border px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-accent"
                 >
                   Cancel
                 </button>
@@ -630,7 +621,7 @@ export default function MyTuitionsTable({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white hover:bg-[#24564B] disabled:opacity-50"
+                  className="rounded-xl bg-[#183F38] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#24564B] disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
