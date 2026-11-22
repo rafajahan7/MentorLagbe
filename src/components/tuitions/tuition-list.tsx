@@ -1,27 +1,52 @@
 
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, SlidersHorizontal, BookOpen, X } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  BookOpen,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 import TuitionCard from "@/components/tuitions/tuition-card";
 import type { Tuition } from "@/lib/actions/tuitions";
 
 interface TuitionListProps {
   tuitions: Tuition[];
+  currentPage: number;
+  totalPages: number;
+  totalTuitions: number;
+  subjects: string[];
+  classLevels: string[];
 }
 
-export default function TuitionList({ tuitions }: TuitionListProps) {
+export default function TuitionList({
+  tuitions,
+  currentPage,
+  totalPages,
+  totalTuitions,
+  subjects,
+  classLevels,
+}: TuitionListProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [subject, setSubject] = useState(searchParams.get("subject") || "all");
+  const [search, setSearch] = useState(
+    searchParams.get("search") || ""
+  );
+  const [subject, setSubject] = useState(
+    searchParams.get("subject") || "all"
+  );
   const [classLevel, setClassLevel] = useState(
     searchParams.get("classLevel") || "all"
   );
-  const [mode, setMode] = useState(searchParams.get("mode") || "all");
+  const [mode, setMode] = useState(
+    searchParams.get("mode") || "all"
+  );
 
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
@@ -30,18 +55,11 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
     setMode(searchParams.get("mode") || "all");
   }, [searchParams]);
 
-  const subjects = useMemo(
-    () => [...new Set(tuitions.map((tuition) => tuition.subject))].sort(),
-    [tuitions]
-  );
-
-  const classLevels = useMemo(
-    () => [...new Set(tuitions.map((tuition) => tuition.classLevel))].sort(),
-    [tuitions]
-  );
-
   function updateFilters(values: Record<string, string>) {
     const params = new URLSearchParams(searchParams.toString());
+
+    // Reset pagination whenever a filter changes
+    params.delete("page");
 
     Object.entries(values).forEach(([key, value]) => {
       if (!value || value === "all") {
@@ -72,6 +90,22 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
     router.replace("/tuitions", { scroll: false });
   }
 
+  function changePage(page: number) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page <= 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(page));
+    }
+
+    const query = params.toString();
+
+    router.push(query ? `/tuitions?${query}` : "/tuitions", {
+      scroll: false,
+    });
+  }
+
   const hasActiveFilters =
     search !== "" ||
     subject !== "all" ||
@@ -96,7 +130,7 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
         </div>
 
         <p className="text-sm font-semibold text-[#183F38]">
-          {tuitions.length} matching tuitions
+          {totalTuitions} matching tuitions
         </p>
       </div>
 
@@ -227,11 +261,65 @@ export default function TuitionList({ tuitions }: TuitionListProps) {
 
       <div className="mt-10">
         {tuitions.length > 0 ? (
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {tuitions.map((tuition) => (
-              <TuitionCard key={tuition._id} tuition={tuition} />
-            ))}
-          </div>
+          <>
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {tuitions.map((tuition) => (
+                <TuitionCard
+                  key={tuition._id}
+                  tuition={tuition}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-12 flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => changePage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1 rounded-xl border border-[#183F38]/15 bg-white px-4 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <ChevronLeft size={17} />
+                  Previous
+                </button>
+
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1
+                ).map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => changePage(page)}
+                    aria-current={
+                      currentPage === page ? "page" : undefined
+                    }
+                    className={`h-11 min-w-11 rounded-xl px-3 text-sm font-bold transition ${
+                      currentPage === page
+                        ? "bg-[#183F38] text-white"
+                        : "border border-[#183F38]/15 bg-white text-[#183F38] hover:bg-[#DCE9E2]"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => changePage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1 rounded-xl border border-[#183F38]/15 bg-white px-4 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                  <ChevronRight size={17} />
+                </button>
+              </div>
+            )}
+
+            <p className="mt-4 text-center text-sm text-[#68736C]">
+              Page {currentPage} of {totalPages || 1}
+            </p>
+          </>
         ) : (
           <div className="rounded-3xl border border-dashed border-[#183F38]/20 bg-white px-6 py-20 text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#DCE9E2] text-[#183F38]">

@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
 
-import { getApprovedTuitions } from "@/lib/actions/tuitions";
+import { getPaginatedApprovedTuitions } from "@/lib/actions/tuitions";
 import TuitionList from "@/components/tuitions/tuition-list";
 
 export const metadata = {
@@ -17,6 +17,7 @@ interface TuitionsPageProps {
     subject?: string;
     classLevel?: string;
     mode?: string;
+    page?: string;
   }>;
 }
 
@@ -27,17 +28,34 @@ async function TuitionResults({
 
   const params = await searchParams;
 
-  const tuitions = await getApprovedTuitions({
-    search: params.search,
-    subject: params.subject,
-    classLevel: params.classLevel,
-    mode:
-      params.mode === "Online" || params.mode === "Offline"
-        ? params.mode
-        : "",
-  });
+  const requestedPage = Math.max(
+    1,
+    Number.parseInt(params.page || "1", 10) || 1
+  );
 
-  return <TuitionList tuitions={tuitions} />;
+  const result = await getPaginatedApprovedTuitions(
+    {
+      search: params.search,
+      subject: params.subject,
+      classLevel: params.classLevel,
+      mode:
+        params.mode === "Online" || params.mode === "Offline"
+          ? params.mode
+          : "",
+    },
+    requestedPage
+  );
+
+  return (
+    <TuitionList
+      tuitions={result.tuitions}
+      currentPage={result.currentPage}
+      totalPages={result.totalPages}
+      totalTuitions={result.totalTuitions}
+      subjects={result.subjects}
+      classLevels={result.classLevels}
+    />
+  );
 }
 
 function TuitionLoading() {

@@ -33,48 +33,51 @@ interface TuitionFilters {
   mode?: "Online" | "Offline" | "";
 }
 
+const PAGE_SIZE = 6;
+
+function buildTuitionQuery(filters?: TuitionFilters) {
+  const query: Record<string, unknown> = {
+    approvalStatus: "approved",
+    isActive: true,
+  };
+
+  if (filters?.search?.trim()) {
+    const searchTerm = filters.search.trim();
+
+    const escapedSearch = searchTerm.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+    query.$or = [
+      { title: { $regex: escapedSearch, $options: "i" } },
+      { subject: { $regex: escapedSearch, $options: "i" } },
+    ];
+  }
+
+  if (filters?.subject?.trim()) {
+    query.subject = filters.subject.trim();
+  }
+
+  if (filters?.classLevel?.trim()) {
+    query.classLevel = filters.classLevel.trim();
+  }
+
+  if (filters?.mode === "Online" || filters?.mode === "Offline") {
+    query.mode = filters.mode;
+  }
+
+  return query;
+}
+
+// Existing function — kept for compatibility
 export async function getApprovedTuitions(
   filters?: TuitionFilters
 ): Promise<Tuition[]> {
   try {
-    const query: Record<string, unknown> = {
-      approvalStatus: "approved",
-      isActive: true,
-    };
-
-    // Search by tuition title or subject
-    if (filters?.search?.trim()) {
-      const searchTerm = filters.search.trim();
-
-      const escapedSearch = searchTerm.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&"
-      );
-
-      query.$or = [
-        { title: { $regex: escapedSearch, $options: "i" } },
-        { subject: { $regex: escapedSearch, $options: "i" } },
-      ];
-    }
-
-    // Filter by subject
-    if (filters?.subject?.trim()) {
-      query.subject = filters.subject.trim();
-    }
-
-    // Filter by class level
-    if (filters?.classLevel?.trim()) {
-      query.classLevel = filters.classLevel.trim();
-    }
-
-    // Filter by learning mode
-    if (filters?.mode === "Online" || filters?.mode === "Offline") {
-      query.mode = filters.mode;
-    }
-
     const tuitions = await db
       .collection<TuitionDocument>("tuitions")
-      .find(query)
+      .find(buildTuitionQuery(filters))
       .sort({ createdAt: -1 })
       .toArray();
 
@@ -85,6 +88,74 @@ export async function getApprovedTuitions(
   } catch (error) {
     console.error("Failed to fetch tuitions:", error);
     return [];
+  }
+}
+
+// New server-side pagination function
+export async function getPaginatedApprovedTuitions(
+  filters?: TuitionFilters,
+  requestedPage = 1
+) {
+  try {
+    const collection =
+      db.collection<TuitionDocument>("tuitions");
+
+    const query = buildTuitionQuery(filters);
+
+    const totalTuitions = await collection.countDocuments(query);
+
+    const totalPages = Math.ceil(totalTuitions / PAGE_SIZE);
+
+    const currentPage = Math.min(
+      Math.max(1, Math.floor(requestedPage) || 1),
+      Math.max(totalPages, 1)
+    );
+
+    const tuitions = await collection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip((currentPage - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE)
+      .toArray();
+
+    const subjects = await collection.distinct(
+      "subject",
+      {
+        approvalStatus: "approved",
+        isActive: true,
+      }
+    );
+
+    const classLevels = await collection.distinct(
+      "classLevel",
+      {
+        approvalStatus: "approved",
+        isActive: true,
+      }
+    );
+
+    return {
+      tuitions: tuitions.map((tuition) => ({
+        ...tuition,
+        _id: tuition._id.toString(),
+      })),
+      currentPage,
+      totalPages,
+      totalTuitions,
+      subjects: subjects.sort(),
+      classLevels: classLevels.sort(),
+    };
+  } catch (error) {
+    console.error("Failed to fetch paginated tuitions:", error);
+
+    return {
+      tuitions: [],
+      currentPage: 1,
+      totalPages: 0,
+      totalTuitions: 0,
+      subjects: [],
+      classLevels: [],
+    };
   }
 }
 
