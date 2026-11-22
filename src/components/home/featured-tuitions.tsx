@@ -17,7 +17,7 @@ export default async function FeaturedTuitions() {
   const tuitions = await getFeaturedTuitions();
 
   return (
-    <section className="bg-white px-6 py-20 md:py-28">
+    <section className="bg-background px-6 py-20 text-foreground md:py-28">
       <div className="mx-auto max-w-7xl">
         {/* Section Heading */}
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -26,11 +26,11 @@ export default async function FeaturedTuitions() {
               Explore Opportunities
             </span>
 
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#183F38] md:text-4xl">
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               Featured Tuitions
             </h2>
 
-            <p className="mt-4 max-w-xl text-base leading-7 text-[#68736C]">
+            <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
               Discover the latest approved tuition opportunities and
               find the right learning match for your journey.
             </p>
@@ -38,7 +38,7 @@ export default async function FeaturedTuitions() {
 
           <Link
             href="/tuitions"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#183F38]/20 px-6 py-3 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2]"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-accent"
           >
             Browse All Tuitions
             <ArrowRight size={17} />
@@ -51,56 +51,56 @@ export default async function FeaturedTuitions() {
             {tuitions.map((tuition) => (
               <article
                 key={tuition._id}
-                className="flex h-full flex-col rounded-2xl border border-[#183F38]/10 bg-[#F7F4EC] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#D9A441]/60 hover:shadow-xl"
+                className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:border-[#D9A441]/60 hover:shadow-xl"
               >
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-3">
-                  <span className="rounded-full bg-[#DCE9E2] px-3 py-1.5 text-xs font-semibold text-[#183F38]">
+                  <span className="rounded-full bg-[#DCE9E2] px-3 py-1.5 text-xs font-semibold text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
                     {tuition.subject}
                   </span>
 
-                  <span className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-[#58645D]">
+                  <span className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">
                     {tuition.mode}
                   </span>
                 </div>
 
                 {/* Title and Class */}
                 <div className="mt-5">
-                  <h3 className="line-clamp-2 min-h-[3.5rem] text-xl font-bold text-[#183F38]">
+                  <h3 className="line-clamp-2 min-h-[3.5rem] text-xl font-bold text-card-foreground">
                     {tuition.title}
                   </h3>
 
-                  <div className="mt-3 flex items-center gap-2 text-sm text-[#68736C]">
+                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
                     <GraduationCap size={17} />
                     <span>{tuition.classLevel}</span>
                   </div>
                 </div>
 
                 {/* Tuition Details */}
-                <div className="mt-6 space-y-3 border-t border-[#183F38]/10 pt-5">
+                <div className="mt-6 space-y-3 border-t border-border pt-5">
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="flex items-center gap-2 text-[#68736C]">
+                    <span className="flex items-center gap-2 text-muted-foreground">
                       <Wallet size={16} />
                       Monthly Fee
                     </span>
 
-                    <span className="font-bold text-[#183F38]">
+                    <span className="font-bold text-card-foreground">
                       ৳{tuition.monthlyFee.toLocaleString("en-BD")}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="flex items-center gap-2 text-[#68736C]">
+                    <span className="flex items-center gap-2 text-muted-foreground">
                       <BookOpen size={16} />
                       Tutor
                     </span>
 
-                    <span className="max-w-[55%] truncate font-semibold text-[#183F38]">
+                    <span className="max-w-[55%] truncate font-semibold text-card-foreground">
                       {tuition.tutorName}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-[#68736C]">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <MapPin size={16} />
                     <span className="truncate">
                       {tuition.location || "Location not specified"}
@@ -122,14 +122,14 @@ export default async function FeaturedTuitions() {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-[#183F38]/20 bg-[#F7F4EC] px-6 py-16 text-center">
+          <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
             <BookOpen className="mx-auto text-[#D9A441]" size={36} />
 
-            <h3 className="mt-4 text-xl font-bold text-[#183F38]">
+            <h3 className="mt-4 text-xl font-bold text-card-foreground">
               No Featured Tuitions Yet
             </h3>
 
-            <p className="mt-2 text-sm text-[#68736C]">
+            <p className="mt-2 text-sm text-muted-foreground">
               New approved tuition opportunities will appear here.
             </p>
 

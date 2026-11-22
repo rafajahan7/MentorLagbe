@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { Check, ArrowRight, GraduationCap, BookOpen } from "lucide-react";
 
@@ -55,18 +54,18 @@ const plans = [
 
 export default function PricingPreview() {
   return (
-    <section className="bg-[#F7F4EC] px-6 py-20">
+    <section className="bg-background px-6 py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-[#D9A441]">
             Simple & Transparent
           </span>
 
-          <h2 className="mt-3 text-3xl font-bold text-[#183F38] sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold text-foreground sm:text-4xl">
             Choose the plan that fits your journey
           </h2>
 
-          <p className="mt-4 text-[#242C2A]/70">
+          <p className="mt-4 text-muted-foreground">
             Start for free and upgrade whenever you are ready to grow with
             MentorLagbe.
           </p>
@@ -79,16 +78,16 @@ export default function PricingPreview() {
             return (
               <div
                 key={plan.name}
-                className={`flex h-full flex-col rounded-2xl border p-6 ${
+                className={`flex h-full flex-col rounded-2xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lg ${
                   plan.free
-                    ? "border-[#DCE9E2] bg-white"
+                    ? "border-border bg-card text-card-foreground"
                     : "border-[#D9A441] bg-[#183F38] text-white"
                 }`}
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${
                     plan.free
-                      ? "bg-[#DCE9E2] text-[#183F38]"
+                      ? "bg-[#DCE9E2] text-[#183F38] dark:bg-[#29463E] dark:text-[#DCE9E2]"
                       : "bg-[#D9A441]/20 text-[#D9A441]"
                   }`}
                 >
@@ -99,7 +98,9 @@ export default function PricingPreview() {
 
                 <p
                   className={`mt-2 min-h-12 text-sm ${
-                    plan.free ? "text-gray-600" : "text-white/70"
+                    plan.free
+                      ? "text-muted-foreground"
+                      : "text-white/70"
                   }`}
                 >
                   {plan.description}
@@ -126,7 +127,7 @@ export default function PricingPreview() {
                   href="/pricing"
                   className={`mt-8 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${
                     plan.free
-                      ? "bg-[#183F38] text-white hover:bg-[#24564C]"
+                      ? "bg-[#183F38] text-white hover:bg-[#24564C] dark:bg-[#D9A441] dark:text-[#183F38] dark:hover:bg-[#E7B956]"
                       : "bg-[#D9A441] text-[#183F38] hover:bg-[#E7B956]"
                   }`}
                 >
@@ -138,7 +139,7 @@ export default function PricingPreview() {
           })}
         </div>
 
-        <p className="mt-8 text-center text-sm text-[#242C2A]/60">
+        <p className="mt-8 text-center text-sm text-muted-foreground">
           View full plan details and subscription options on our pricing page.
         </p>
       </div>

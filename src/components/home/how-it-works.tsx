@@ -1,4 +1,3 @@
-
 import {
   UserRoundPlus,
   BookOpen,
@@ -46,7 +45,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-24 bg-white px-6 py-24 md:py-28"
+      className="scroll-mt-24 bg-background px-6 py-24 md:py-28"
     >
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
@@ -55,12 +54,12 @@ export default function HowItWorks() {
             HOW MENTORLAGBE WORKS
           </span>
 
-          <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-[#183F38] md:text-5xl">
+          <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-5xl">
             From finding guidance
             <span className="text-[#D9A441]"> to growing together.</span>
           </h2>
 
-          <p className="mt-5 max-w-xl text-base leading-8 text-[#68736C]">
+          <p className="mt-5 max-w-xl text-base leading-8 text-muted-foreground">
             A simpler way for students to find the right learning
             opportunities and for tutors to share their knowledge.
             Everything happens in one connected platform.
@@ -75,34 +74,34 @@ export default function HowItWorks() {
             return (
               <article
                 key={step.number}
-                className="group flex flex-col rounded-3xl border border-[#183F38]/10 bg-[#F7F4EC] p-7 transition duration-300 hover:-translate-y-2 hover:border-[#D9A441]/60 hover:shadow-xl"
+                className="group flex flex-col rounded-3xl border border-border bg-card p-7 transition duration-300 hover:-translate-y-2 hover:border-[#D9A441]/60 hover:shadow-xl"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-3xl font-bold text-[#D9A441]">
                     {step.number}
                   </span>
 
-                  <div className="rounded-2xl bg-[#DCE9E2] p-3 text-[#183F38] transition group-hover:bg-[#183F38] group-hover:text-white">
+                  <div className="rounded-2xl bg-[#DCE9E2] p-3 text-[#183F38] transition group-hover:bg-[#183F38] group-hover:text-white dark:bg-[#29463E] dark:text-[#DCE9E2] dark:group-hover:bg-[#D9A441] dark:group-hover:text-[#183F38]">
                     <Icon size={24} strokeWidth={1.8} />
                   </div>
                 </div>
 
-                <h3 className="mt-8 text-xl font-bold text-[#183F38]">
+                <h3 className="mt-8 text-xl font-bold text-card-foreground">
                   {step.title}
                 </h3>
 
-                <p className="mt-4 flex-1 text-sm leading-7 text-[#68736C]">
+                <p className="mt-4 flex-1 text-sm leading-7 text-muted-foreground">
                   {step.description}
                 </p>
 
-                <div className="mt-7 flex items-center justify-between border-t border-[#183F38]/10 pt-5">
-                  <span className="text-[10px] font-bold tracking-wider text-[#9A7B3F]">
+                <div className="mt-7 flex items-center justify-between border-t border-border pt-5">
+                  <span className="text-[10px] font-bold tracking-wider text-[#9A7B3F] dark:text-[#D9A441]">
                     {step.tag}
                   </span>
 
                   <ArrowUpRight
                     size={18}
-                    className="text-[#B58A35] transition group-hover:translate-x-1 group-hover:-translate-y-1"
+                    className="text-[#B58A35] transition group-hover:translate-x-1 group-hover:-translate-y-1 dark:text-[#D9A441]"
                   />
                 </div>
               </article>

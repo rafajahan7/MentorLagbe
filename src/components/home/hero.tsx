@@ -10,18 +10,18 @@ import {
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#F7F4EC]">
+    <section className="relative overflow-hidden bg-background text-foreground">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28 lg:px-8">
         {/* Left Content */}
         <div className="relative z-10">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#183F38]/15 bg-white/60 px-4 py-2">
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-2">
             <Sparkles size={15} className="text-[#D9A441]" />
-            <span className="text-xs font-semibold tracking-wide text-[#183F38]">
+            <span className="text-xs font-semibold tracking-wide text-foreground">
               THE LEARNING EXCHANGE
             </span>
           </div>
 
-          <h1 className="max-w-xl text-5xl font-bold leading-[1.12] tracking-tight text-[#183F38] md:text-6xl lg:text-7xl">
+          <h1 className="max-w-xl text-5xl font-bold leading-[1.12] tracking-tight text-foreground md:text-6xl lg:text-7xl">
             Find your ideal
             <span className="relative mx-2 inline-block text-[#D9A441]">
               tutor
@@ -29,7 +29,7 @@ export default function Hero() {
             or mentorship opportunity.
           </h1>
 
-          <p className="mt-7 max-w-lg text-base leading-8 text-[#58645D] md:text-lg">
+          <p className="mt-7 max-w-lg text-base leading-8 text-muted-foreground md:text-lg">
             Discover trusted tutors, explore available tuition
             opportunities, or find your next batch of students.
             MentorLagbe connects learners and educators to make
@@ -47,34 +47,34 @@ export default function Hero() {
 
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 rounded-full border border-[#183F38]/25 px-7 py-4 text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2]"
+              className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-4 text-sm font-semibold text-foreground transition hover:bg-accent"
             >
               Become a Tutor
             </Link>
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-[#183F38]/10 pt-7">
+          <div className="mt-12 flex flex-wrap items-center gap-8 border-t border-border pt-7">
             <div>
-              <p className="text-2xl font-bold text-[#183F38]">01</p>
-              <p className="mt-1 text-xs text-[#68736C]">
+              <p className="text-2xl font-bold text-foreground">01</p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Find opportunities
               </p>
             </div>
 
-            <div className="h-10 w-px bg-[#183F38]/15" />
+            <div className="h-10 w-px bg-border" />
 
             <div>
-              <p className="text-2xl font-bold text-[#183F38]">02</p>
-              <p className="mt-1 text-xs text-[#68736C]">
+              <p className="text-2xl font-bold text-foreground">02</p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Connect & apply
               </p>
             </div>
 
-            <div className="h-10 w-px bg-[#183F38]/15" />
+            <div className="h-10 w-px bg-border" />
 
             <div>
-              <p className="text-2xl font-bold text-[#183F38]">03</p>
-              <p className="mt-1 text-xs text-[#68736C]">
+              <p className="text-2xl font-bold text-foreground">03</p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Grow together
               </p>
             </div>
@@ -83,8 +83,8 @@ export default function Hero() {
 
         {/* Right Visual */}
         <div className="relative mx-auto w-full max-w-lg">
-          <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-[#DCE9E2]" />
-          <div className="absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-[#F1E5C9]" />
+          <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-[#DCE9E2] dark:bg-[#183F38]" />
+          <div className="absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-[#F1E5C9] dark:bg-[#4A3512]" />
 
           <div className="relative overflow-hidden rounded-[2rem] bg-[#183F38] p-5 shadow-2xl md:p-7">
             <div className="flex items-center justify-between">
@@ -102,46 +102,46 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="mt-8 rounded-2xl bg-[#F7F4EC] p-5">
+            <div className="mt-8 rounded-2xl bg-[#F7F4EC] p-5 dark:bg-[#242C2A]">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-[#DCE9E2] p-3 text-[#183F38]">
+                <div className="rounded-xl bg-[#DCE9E2] p-3 text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
                   <BookOpen size={23} />
                 </div>
 
                 <div>
-                  <p className="text-sm font-bold text-[#183F38]">
+                  <p className="text-sm font-bold text-[#183F38] dark:text-[#F7F4EC]">
                     Find your learning match
                   </p>
-                  <p className="mt-1 text-xs text-[#68736C]">
+                  <p className="mt-1 text-xs text-[#68736C] dark:text-[#B7C2BB]">
                     Explore opportunities made for you
                   </p>
                 </div>
               </div>
 
               <div className="mt-5 space-y-3">
-                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">
+                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3 dark:border-white/10 dark:bg-[#303B37]">
+                  <span className="text-sm text-[#58645D] dark:text-[#E0E7E2]">
                     Mathematics
                   </span>
-                  <span className="rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38]">
+                  <span className="rounded-full bg-[#DCE9E2] px-3 py-1 text-xs font-semibold text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
                     Popular
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">
+                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3 dark:border-white/10 dark:bg-[#303B37]">
+                  <span className="text-sm text-[#58645D] dark:text-[#E0E7E2]">
                     English
                   </span>
-                  <span className="text-xs text-[#68736C]">
+                  <span className="text-xs text-[#68736C] dark:text-[#B7C2BB]">
                     Explore
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3">
-                  <span className="text-sm text-[#58645D]">
+                <div className="flex items-center justify-between rounded-xl border border-[#183F38]/10 bg-white p-3 dark:border-white/10 dark:bg-[#303B37]">
+                  <span className="text-sm text-[#58645D] dark:text-[#E0E7E2]">
                     Science
                   </span>
-                  <span className="text-xs text-[#68736C]">
+                  <span className="text-xs text-[#68736C] dark:text-[#B7C2BB]">
                     Explore
                   </span>
                 </div>

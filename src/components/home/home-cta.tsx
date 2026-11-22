@@ -1,10 +1,9 @@
-
 import Link from "next/link";
 import { ArrowRight, BookOpen, GraduationCap } from "lucide-react";
 
 export default function HomeCTA() {
   return (
-    <section className="bg-[#F7F4EC] px-6 py-20 md:py-28">
+    <section className="bg-background px-6 py-20 md:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-[#183F38] px-7 py-16 text-center shadow-xl md:px-16 md:py-20">
 
