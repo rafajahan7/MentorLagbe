@@ -80,7 +80,7 @@ export default async function AdminDashboardPage() {
         : "0";
 
   return (
-    <main className="min-h-screen bg-[#F7F4EC] px-5 py-12 md:px-8">
+    <main className="min-h-screen bg-background px-5 py-12 text-foreground md:px-8">
       <div className="mx-auto max-w-7xl">
 
         {/* Header */}
@@ -94,20 +94,24 @@ export default async function AdminDashboardPage() {
               PLATFORM CONTROL CENTER
             </p>
 
-            <h1 className="mt-3 text-3xl font-bold text-[#183F38] md:text-4xl">
+            <h1 className="mt-3 text-3xl font-bold text-foreground md:text-4xl">
               Admin Overview
             </h1>
 
-            <p className="mt-3 text-[#68736C]">
+            <p className="mt-3 text-muted-foreground">
               Monitor users, tuition activity and platform revenue.
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#183F38]/10 bg-white px-5 py-3">
-            <p className="text-xs text-[#68736C]">Signed in as</p>
-            <p className="mt-1 font-bold text-[#183F38]">
+          <div className="rounded-xl border border-border bg-card px-5 py-3">
+            <p className="text-xs text-muted-foreground">
+              Signed in as
+            </p>
+
+            <p className="mt-1 font-bold text-card-foreground">
               {session.user.name}
             </p>
+
             <span className="text-xs font-semibold capitalize text-[#B58A35]">
               {session.user.role}
             </span>
@@ -117,10 +121,11 @@ export default async function AdminDashboardPage() {
         {/* Statistics */}
         <section>
           <div className="mb-5">
-            <h2 className="text-xl font-bold text-[#183F38]">
+            <h2 className="text-xl font-bold text-foreground">
               Platform Statistics
             </h2>
-            <p className="mt-1 text-sm text-[#68736C]">
+
+            <p className="mt-1 text-sm text-muted-foreground">
               Current overview of MentorLagbe.
             </p>
           </div>
@@ -139,7 +144,7 @@ export default async function AdminDashboardPage() {
                 value={stats.totalTutors.toLocaleString()}
                 description="Registered tutor accounts"
                 icon={GraduationCap}
-                iconBackground="bg-[#F8EBCB]"
+                iconBackground="bg-[#F8EBCB] dark:bg-[#51452A]"
               />
 
               <StatsCard
@@ -147,7 +152,7 @@ export default async function AdminDashboardPage() {
                 value={`${stats.pendingTuitions} / ${stats.approvedTuitions}`}
                 description={`${stats.rejectedTuitions} rejected tuition posts`}
                 icon={Clock}
-                iconBackground="bg-[#F6DFD8]"
+                iconBackground="bg-[#F6DFD8] dark:bg-[#51362F]"
               />
 
               <StatsCard
@@ -155,11 +160,11 @@ export default async function AdminDashboardPage() {
                 value={revenueDisplay}
                 description={revenueDescription}
                 icon={CreditCard}
-                iconBackground="bg-[#DCE9E2]"
+                iconBackground="bg-[#DCE9E2] dark:bg-[#29483D]"
               />
             </div>
           ) : (
-            <div className="rounded-2xl border border-red-200 bg-white p-6 text-sm text-red-700">
+            <div className="rounded-2xl border border-red-200 bg-card p-6 text-sm text-red-600 dark:border-red-900 dark:text-red-400">
               Could not load platform statistics. Please refresh the page.
             </div>
           )}
@@ -168,10 +173,11 @@ export default async function AdminDashboardPage() {
         {/* Management Navigation */}
         <section className="mt-12">
           <div className="mb-5">
-            <h2 className="text-xl font-bold text-[#183F38]">
+            <h2 className="text-xl font-bold text-foreground">
               Management Center
             </h2>
-            <p className="mt-1 text-sm text-[#68736C]">
+
+            <p className="mt-1 text-sm text-muted-foreground">
               Manage the main areas of your platform.
             </p>
           </div>
@@ -184,22 +190,23 @@ export default async function AdminDashboardPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group rounded-2xl border border-[#183F38]/10 bg-white p-6 transition hover:-translate-y-1 hover:border-[#D9A441] hover:shadow-md"
+                  className="group rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#D9A441] hover:shadow-md"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#DCE9E2] text-[#183F38]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#DCE9E2] text-[#183F38] dark:bg-[#29483D] dark:text-[#DCE9E2]">
                     <Icon size={23} />
                   </div>
 
-                  <h3 className="mt-5 text-lg font-bold text-[#183F38]">
+                  <h3 className="mt-5 text-lg font-bold text-card-foreground">
                     {item.title}
                   </h3>
 
-                  <p className="mt-2 text-sm leading-6 text-[#68736C]">
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {item.description}
                   </p>
 
                   <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#B58A35]">
                     Manage section
+
                     <ArrowRight
                       size={16}
                       className="transition group-hover:translate-x-1"
@@ -211,10 +218,11 @@ export default async function AdminDashboardPage() {
           </div>
         </section>
 
-        {/* Tuition status note */}
+        {/* Tuition Status Note */}
         <section className="mt-10 rounded-2xl bg-[#183F38] p-7 text-white">
           <div className="flex items-center gap-3">
             <CheckCircle2 size={24} className="text-[#D9A441]" />
+
             <h2 className="text-lg font-bold">
               Keep MentorLagbe running smoothly
             </h2>
