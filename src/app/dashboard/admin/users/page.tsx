@@ -32,13 +32,12 @@ export default async function AdminUsersPage() {
   const result = await getAllUsers();
 
   return (
-    <main className="min-h-screen bg-[#F7F4EC] px-5 py-12 md:px-8">
+    <main className="min-h-screen bg-background px-5 py-12 text-foreground md:px-8">
       <div className="mx-auto max-w-7xl">
-
         {/* Back navigation */}
         <Link
           href="/dashboard/admin"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#68736C] transition hover:text-[#B58A35]"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-[#B58A35]"
         >
           <ArrowLeft size={17} />
           Back to Admin Overview
@@ -54,11 +53,11 @@ export default async function AdminUsersPage() {
             PLATFORM MANAGEMENT
           </p>
 
-          <h1 className="mt-3 text-3xl font-bold text-[#183F38] md:text-4xl">
+          <h1 className="mt-3 text-3xl font-bold text-foreground md:text-4xl">
             User Management
           </h1>
 
-          <p className="mt-3 max-w-2xl leading-7 text-[#68736C]">
+          <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
             View all registered students, tutors and administrators.
             Manage account roles from one place.
           </p>
@@ -71,16 +70,16 @@ export default async function AdminUsersPage() {
             currentAdminId={session.user.id}
           />
         ) : (
-          <div className="rounded-2xl border border-red-200 bg-white p-8 text-center">
-            <h2 className="font-bold text-[#A34E37]">
+          <div className="rounded-2xl border border-red-200 bg-card p-8 text-center dark:border-red-900">
+            <h2 className="font-bold text-red-700 dark:text-red-400">
               Unable to load users
             </h2>
-            <p className="mt-2 text-sm text-[#68736C]">
+
+            <p className="mt-2 text-sm text-muted-foreground">
               Please refresh the page and try again.
             </p>
           </div>
         )}
-
       </div>
     </main>
   );

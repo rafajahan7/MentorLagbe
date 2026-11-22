@@ -84,18 +84,18 @@ export default function UsersTable({
 
   return (
     <div>
-      {/* Search and summary */}
+      {/* Search and Summary */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DCE9E2] text-[#183F38]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DCE9E2] text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
             <Users size={22} />
           </div>
 
           <div>
-            <h2 className="font-bold text-[#183F38]">
+            <h2 className="font-bold text-foreground">
               Registered Users
             </h2>
-            <p className="text-sm text-[#68736C]">
+            <p className="text-sm text-muted-foreground">
               {users.length} total accounts
             </p>
           </div>
@@ -104,37 +104,38 @@ export default function UsersTable({
         <div className="relative w-full sm:max-w-sm">
           <Search
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#89928C]"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
+
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search name, email or role..."
-            className="w-full rounded-xl border border-[#183F38]/15 bg-white py-3 pl-11 pr-4 text-sm text-[#242C2A] outline-none focus:border-[#B58A35]"
+            className="w-full rounded-xl border border-input bg-background py-3 pl-11 pr-4 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-[#B58A35] focus:ring-2 focus:ring-[#B58A35]/20"
           />
         </div>
       </div>
 
       {/* Feedback */}
       {message && (
-        <div className="mb-4 rounded-xl bg-[#DCE9E2] px-4 py-3 text-sm font-medium text-[#183F38]">
+        <div className="mb-4 rounded-xl bg-[#DCE9E2] px-4 py-3 text-sm font-medium text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
           {message}
         </div>
       )}
 
       {error && (
-        <div className="mb-4 rounded-xl bg-[#F6DFD8] px-4 py-3 text-sm font-medium text-[#A34E37]">
+        <div className="mb-4 rounded-xl bg-[#F6DFD8] px-4 py-3 text-sm font-medium text-[#A34E37] dark:bg-red-950/40 dark:text-red-400">
           {error}
         </div>
       )}
 
-      {/* Users table */}
-      <div className="overflow-hidden rounded-2xl border border-[#183F38]/10 bg-white">
+      {/* Users Table */}
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[850px] text-left">
-            <thead className="bg-[#F7F4EC]">
-              <tr className="text-xs font-bold uppercase tracking-wider text-[#68736C]">
+            <thead className="bg-muted">
+              <tr className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <th className="px-6 py-4">User</th>
                 <th className="px-6 py-4">Role</th>
                 <th className="px-6 py-4">Plan</th>
@@ -143,11 +144,11 @@ export default function UsersTable({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#183F38]/10">
+            <tbody className="divide-y divide-border">
               {filteredUsers.map((user) => (
                 <tr
                   key={user._id}
-                  className="transition hover:bg-[#F7F4EC]/60"
+                  className="transition-colors hover:bg-muted/50"
                 >
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
@@ -164,10 +165,10 @@ export default function UsersTable({
                       )}
 
                       <div>
-                        <p className="font-semibold text-[#183F38]">
+                        <p className="font-semibold text-card-foreground">
                           {user.name}
                         </p>
-                        <p className="text-xs text-[#89928C]">
+                        <p className="text-xs text-muted-foreground">
                           {user.email}
                         </p>
                       </div>
@@ -175,7 +176,7 @@ export default function UsersTable({
                   </td>
 
                   <td className="px-6 py-5">
-                    <span className="rounded-full bg-[#DCE9E2] px-3 py-1.5 text-xs font-bold capitalize text-[#183F38]">
+                    <span className="rounded-full bg-[#DCE9E2] px-3 py-1.5 text-xs font-bold capitalize text-[#183F38] dark:bg-[#183F38] dark:text-[#DCE9E2]">
                       {user.role}
                     </span>
                   </td>
@@ -184,15 +185,15 @@ export default function UsersTable({
                     <span
                       className={`rounded-full px-3 py-1.5 text-xs font-bold capitalize ${
                         user.plan === "pro"
-                          ? "bg-[#F8EBCB] text-[#89651D]"
-                          : "bg-gray-100 text-gray-600"
+                          ? "bg-[#F8EBCB] text-[#89651D] dark:bg-[#4A3512] dark:text-[#F5C96B]"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
                       }`}
                     >
                       {user.plan}
                     </span>
                   </td>
 
-                  <td className="px-6 py-5 text-sm text-[#68736C]">
+                  <td className="px-6 py-5 text-sm text-muted-foreground">
                     {user.createdAt
                       ? new Date(user.createdAt).toLocaleDateString("en-BD")
                       : "—"}
@@ -200,7 +201,7 @@ export default function UsersTable({
 
                   <td className="px-6 py-5">
                     {user._id === currentAdminId ? (
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#68736C]">
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground">
                         <ShieldCheck size={15} />
                         Your account
                       </span>
@@ -215,7 +216,7 @@ export default function UsersTable({
                               event.target.value as UserRole
                             )
                           }
-                          className="rounded-lg border border-[#183F38]/15 bg-[#F7F4EC] px-3 py-2 text-sm text-[#183F38] outline-none focus:border-[#B58A35] disabled:opacity-50"
+                          className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[#B58A35] disabled:opacity-50"
                         >
                           <option value="student">Student</option>
                           <option value="tutor">Tutor</option>
@@ -238,7 +239,7 @@ export default function UsersTable({
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-6 py-16 text-center text-sm text-[#68736C]"
+                    className="px-6 py-16 text-center text-sm text-muted-foreground"
                   >
                     No users found.
                   </td>
@@ -249,7 +250,7 @@ export default function UsersTable({
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-[#89928C]">
+      <p className="mt-4 text-xs text-muted-foreground">
         Role changes are saved directly to the users collection.
       </p>
     </div>
