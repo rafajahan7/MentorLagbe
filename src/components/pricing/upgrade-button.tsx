@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -62,7 +61,7 @@ export default function UpgradeButton() {
         type="button"
         onClick={handleUpgrade}
         disabled={loading}
-        className="w-full rounded-xl bg-[#183F38] px-6 py-3 font-semibold text-white transition hover:bg-[#24584E] disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-xl bg-[#183F38] px-6 py-3 font-semibold text-white transition hover:bg-[#24584E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A441] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
@@ -75,7 +74,7 @@ export default function UpgradeButton() {
       </button>
 
       {error && (
-        <p className="mt-3 text-center text-sm text-red-600">
+        <p className="mt-3 text-center text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       )}

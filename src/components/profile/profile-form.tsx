@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useState } from "react";
-import { UserRound, Save, Loader2 } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { updateMyProfile } from "@/lib/actions/profile";
@@ -75,17 +74,24 @@ export default function ProfileForm({
     }
   }
 
+  const inputClass =
+    "w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#D9A441] focus:ring-2 focus:ring-[#D9A441]/20";
+
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-foreground";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-3xl border border-[#183F38]/10 bg-white p-6 shadow-sm md:p-8"
+      className="rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8"
     >
-      <div className="mb-8 border-b border-[#183F38]/10 pb-8">
-        <h2 className="mb-2 text-lg font-bold text-[#183F38]">
+      {/* Profile Picture */}
+      <div className="mb-8 border-b border-border pb-8">
+        <h2 className="mb-2 text-lg font-bold text-card-foreground">
           Profile Picture
         </h2>
 
-        <p className="mb-5 text-sm text-[#68736C]">
+        <p className="mb-5 text-sm text-muted-foreground">
           Upload a profile picture using ImgBB.
         </p>
 
@@ -95,8 +101,9 @@ export default function ProfileForm({
       </div>
 
       <div className="space-y-6">
+        {/* Full Name */}
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#183F38]">
+          <label className={labelClass}>
             Full Name
           </label>
 
@@ -105,29 +112,31 @@ export default function ProfileForm({
             maxLength={100}
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#183F38]"
+            className={inputClass}
             placeholder="Enter your full name"
           />
         </div>
 
+        {/* Email */}
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#183F38]">
+          <label className={labelClass}>
             Email Address
           </label>
 
           <input
             disabled
             value={profile.email}
-            className="w-full cursor-not-allowed rounded-xl border border-[#183F38]/10 bg-gray-100 px-4 py-3 text-sm text-gray-500"
+            className="w-full cursor-not-allowed rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground"
           />
 
-          <p className="mt-1 text-xs text-[#89928C]">
+          <p className="mt-1 text-xs text-muted-foreground">
             Your registered email cannot be changed here.
           </p>
         </div>
 
+        {/* Phone */}
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#183F38]">
+          <label className={labelClass}>
             Phone Number
           </label>
 
@@ -136,13 +145,14 @@ export default function ProfileForm({
             maxLength={30}
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
-            className="w-full rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#183F38]"
+            className={inputClass}
             placeholder="Enter your phone number"
           />
         </div>
 
+        {/* Bio */}
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#183F38]">
+          <label className={labelClass}>
             Bio
           </label>
 
@@ -151,28 +161,31 @@ export default function ProfileForm({
             maxLength={1000}
             value={bio}
             onChange={(event) => setBio(event.target.value)}
-            className="w-full resize-none rounded-xl border border-[#183F38]/15 bg-[#F7F4EC] px-4 py-3 text-sm text-[#242C2A] outline-none focus:border-[#183F38]"
+            className={`${inputClass} resize-none`}
             placeholder="Tell us a little about yourself..."
           />
         </div>
       </div>
 
+      {/* Feedback Message */}
       {message && (
         <p
-          className={`mt-5 rounded-xl px-4 py-3 text-sm ${
+          role="alert"
+          className={`mt-5 rounded-xl border px-4 py-3 text-sm ${
             isError
-              ? "bg-red-50 text-red-600"
-              : "bg-[#DCE9E2] text-[#183F38]"
+              ? "border-red-200 bg-red-50 text-red-600 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400"
+              : "border-[#DCE9E2] bg-[#DCE9E2] text-[#183F38] dark:border-[#29463E] dark:bg-[#183F38]/40 dark:text-[#DCE9E2]"
           }`}
         >
           {message}
         </p>
       )}
 
+      {/* Save Button */}
       <button
         type="submit"
         disabled={loading}
-        className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#183F38] px-6 py-3.5 font-semibold text-white transition hover:bg-[#24574C] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#183F38] px-6 py-3.5 font-semibold text-white transition hover:bg-[#24574C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A441] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {loading ? (
           <>

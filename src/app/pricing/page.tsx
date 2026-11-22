@@ -74,20 +74,20 @@ const plans = [
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-[#F7F4EC]">
+    <main className="min-h-screen bg-background text-foreground">
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#DCE9E2] px-4 py-2 text-sm font-semibold text-[#183F38]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#DCE9E2] px-4 py-2 text-sm font-semibold text-[#183F38] dark:bg-[#29463E] dark:text-[#DCE9E2]">
             <Sparkles size={16} />
             Simple and transparent pricing
           </span>
 
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#183F38] md:text-5xl">
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             Invest in your
             <span className="text-[#D9A441]"> growth.</span>
           </h1>
 
-          <p className="mt-5 leading-7 text-[#68736C]">
+          <p className="mt-5 leading-7 text-muted-foreground">
             Whether you're learning or teaching, choose a plan that
             supports your next step.
           </p>
@@ -97,10 +97,10 @@ export default function PricingPage() {
           {plans.map((plan) => (
             <article
               key={plan.name}
-              className={`relative flex flex-col rounded-3xl border p-7 ${
+              className={`relative flex flex-col rounded-3xl border p-7 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${
                 plan.highlighted
-                  ? "border-[#183F38] bg-[#183F38] text-white shadow-xl"
-                  : "border-[#183F38]/10 bg-white text-[#242C2A]"
+                  ? "border-[#183F38] bg-[#183F38] text-white shadow-xl dark:border-[#315B50]"
+                  : "border-border bg-card text-card-foreground"
               }`}
             >
               {plan.highlighted && (
@@ -109,7 +109,13 @@ export default function PricingPage() {
                 </span>
               )}
 
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#DCE9E2] text-[#183F38]">
+              <div
+                className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl ${
+                  plan.highlighted
+                    ? "bg-white/10 text-[#D9A441]"
+                    : "bg-[#DCE9E2] text-[#183F38] dark:bg-[#29463E] dark:text-[#DCE9E2]"
+                }`}
+              >
                 {plan.name.includes("Student") ? (
                   <GraduationCap size={25} />
                 ) : (
@@ -121,7 +127,9 @@ export default function PricingPage() {
 
               <p
                 className={`mt-3 min-h-14 text-sm leading-6 ${
-                  plan.highlighted ? "text-white/70" : "text-[#89928C]"
+                  plan.highlighted
+                    ? "text-white/70"
+                    : "text-muted-foreground"
                 }`}
               >
                 {plan.description}
@@ -131,7 +139,9 @@ export default function PricingPage() {
                 <span className="text-4xl font-bold">{plan.price}</span>
                 <span
                   className={`text-sm ${
-                    plan.highlighted ? "text-white/70" : "text-[#89928C]"
+                    plan.highlighted
+                      ? "text-white/70"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {plan.period}
@@ -140,7 +150,9 @@ export default function PricingPage() {
 
               <div
                 className={`mb-6 h-px ${
-                  plan.highlighted ? "bg-white/20" : "bg-[#183F38]/10"
+                  plan.highlighted
+                    ? "bg-white/20"
+                    : "bg-border"
                 }`}
               />
 
@@ -161,7 +173,7 @@ export default function PricingPage() {
               ) : (
                 <Link
                   href="/sign-up"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-[#183F38]/20 px-6 py-3 text-center text-sm font-semibold text-[#183F38] transition hover:bg-[#DCE9E2]"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3 text-center text-sm font-semibold text-foreground transition hover:bg-accent hover:text-accent-foreground"
                 >
                   Get Started
                   <ArrowRight size={16} />
@@ -171,7 +183,7 @@ export default function PricingPage() {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-sm text-[#89928C]">
+        <p className="mt-10 text-center text-sm text-muted-foreground">
           Pro subscriptions are billed monthly. You can manage your plan
           through your account.
         </p>
