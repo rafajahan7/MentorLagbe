@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+MentorLagbe is a web-based tuition and mentorship platform that connects students with tutors. Students can explore available tuition opportunities, apply for suitable tuitions, and manage their applications. Tutors can post tuition opportunities, manage applicants, and upgrade their accounts to Pro. Administrators can manage users, moderate tuition posts, and monitor transactions.
 
-First, run the development server:
+Live links:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Live Website: https://mentor-lagbe-flax.vercel.app
+Backend API: https://mentorlagbe-server-kappa.vercel.app
+Frontend Repository: https://github.com/rafajahan7/MentorLagbe
+Backend Repository: https://github.com/rafajahan7/MentorLagbe-Server
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Admin email & password:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+• Admin Email: o@o.com
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+• Admin Password: 12345678
 
-## Learn More
+Key Features:
 
-To learn more about Next.js, take a look at the following resources:
+1.Authentication & User Management
+- User registration and login using Better Auth.
+- Role-based authentication for Students, Tutors, and Admins.
+- Profile management.
+- Protected routes and role-based dashboard access.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Student Features:
+- Browse available tuition opportunities.
+- Search and filter tuitions.
+- Server-side pagination.
+- View detailed tuition information.
+- Apply for tuition opportunities.
+- Prevent duplicate applications.
+- View and manage submitted applications.
+- Cancel pending applications.
+- Track application statuses.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+tutor features:
+- Create and manage tuition posts.
+- Upload tuition banner images using ImgBB.
+- Free plan allows a maximum of 2 tuition posts.
+- Pro plan supports unlimited tuition posts.
+- Activate, close, edit, and delete tuition posts.
+- View and manage student applicants.
+- Accept or reject student applications.
+- Upgrade to Pro through Stripe Checkout.
 
-## Deploy on Vercel
+Admin features:
+- Admin dashboard with platform statistics.
+- Manage registered users.
+- Review and moderate tuition posts.
+- Approve or reject tuition submissions.
+- View transaction records.
+- Manage administrator profile.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Additional feautures:
+- Responsive design for desktop, tablet, and mobile.
+- Dark and light theme toggle.
+- Stripe payment integration.
+- Stripe webhook integration.
+- Toast notifications.
+- Custom loading spinner.
+- Custom 404 and error pages.
+- Demo data seeding for development and testing.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Technologies Used:
+
+Frontend:
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide React
+- Sonner
+- Better Auth
+- next-themes
+
+Backend:
+- Node.js
+- Express.js
+- MongoDB
+- Better Auth
+- JSON Web Token (JWT)
+
+
+- MongoDB Atlas — Database hosting
+- Vercel — Frontend and backend deployment
+- Stripe — Payment processing
+- ImgBB — Image hosting
+
+Important NPM Packages
+
+The project uses packages including:
+
+Frontend:
+- next
+- react
+- typescript
+- tailwindcss
+- better-auth
+- stripe
+- lucide-react
+- sonner
+- next-themes
+
+
+Backend:
+- express
+- mongodb
+- cors
+- dotenv
+- stripe
+- jsonwebtoken
